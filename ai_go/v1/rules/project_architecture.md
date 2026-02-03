@@ -16,37 +16,37 @@ rules. Base code style is defined in `code_style.md`.
 ├── cmd/               
 │   └── root.go
 │   └── svr.go
-├── configs/            # 配置文件
-│   └── settings.yaml   # 默认配置文件（如应用端口、DB连接等）
+├── configs/            # configuration files
+│   └── settings.yaml   # default config (app port, DB connection, etc.)
 │
-├── deployments/        # 部署相关（如 Kubernetes YAML、Docker Compose）
+├── deployments/        # deployment assets (Kubernetes YAML, Docker Compose)
 │   ├── dev/
 │   │   └── ...
 │   └── prod/
 │       └── ...
-├── docs/               # 项目文档
-├── ├── changelog/      # 变更日志（如 CHANGELOG.md，每次发布/迭代记录重要变更）
-│   ├── design/         # 设计文档（流程图、协作约定、接口说明等）
-│   └── swagger/        # OpenAPI/Swagger 规范，API 文档生成 (如 swagger.yaml)
-├── internal/           # 私有应用代码（不可被外部导入）
-│   ├── domain/         # 领域模型
+├── docs/               # project docs
+├── ├── changelog/      # changelog (e.g. CHANGELOG.md per release/iteration)
+│   ├── design/         # design docs (diagrams, conventions, API notes)
+│   └── swagger/        # OpenAPI/Swagger specs (e.g. swagger.yaml)
+├── internal/           # private application code (not importable)
+│   ├── domain/         # domain models
 │   ├── handler/        # controller.
-│   ├── router/         # 路由定义
-│   ├── service/        # 应用核心业务逻辑
-│   └── service/dto/    # 数据传输对象，用于do 和 vo的相互转换
-├── pkg/                # 可重用的公共库代码
+│   ├── router/         # routing definitions
+│   ├── service/        # core business logic
+│   └── service/dto/    # DTOs for DO/VO conversion
+├── pkg/                # reusable shared libraries
 │   ├── auth/
 │   ├── log/
 │   └── utils/
-├── scripts/            # 构建/部署脚本
-├── migrations/         # 数据库迁移
-├── test/               # 集成/端到端测试
-├── web/                # 前端资源（如果适用）
+├── scripts/            # build/deploy scripts
+├── migrations/         # database migrations
+├── test/               # integration/end-to-end tests
+├── web/                # frontend assets (if applicable)
 ├── .gitignore
-├── Makefile            # 标准化构建命令
+├── Makefile            # standardized build commands
 ├── go.mod
 ├── go.sum
-├── main.go             # 主应用程序入口
+├── main.go             # main application entrypoint
 └── README.md
 ```
 
@@ -87,6 +87,27 @@ rules. Base code style is defined in `code_style.md`.
 ## Service Boundaries
 - Each service owns its data and domain boundary.
 - Avoid shared databases across services when possible.
+
+## 🛠️ Technology Stack
+
+### Languages & Frameworks
+- **Java** - Spring Boot, Spring Security, JPA
+- **Python** - FastAPI, Django, SQLAlchemy
+- **Node.js** - Express, Koa, NestJS
+- **Go** - Gin, Echo, GORM
+- **Rust** - Actix-web, Rocket, Diesel
+
+### Databases
+- **Relational** - PostgreSQL, MySQL
+- **NoSQL** - MongoDB, Redis
+- **Search** - Elasticsearch
+- **Message Queue** - RabbitMQ, Kafka
+
+### DevOps & Tools
+- **Containerization** - Docker, Kubernetes
+- **CI/CD** - GitHub Actions, Jenkins
+- **Monitoring** - Prometheus, Grafana
+- **Logging** - ELK Stack
 
 ## Deployment
 
@@ -188,7 +209,7 @@ spec:
 10. Monitor production metrics
 11. If unsure about a best practice or implementation detail, say so instead of guessing
 12. Follow RESTful API design principles and best practices
-13. For every business logic change, check `docs/design` and update or add
+13. For every business logic change, MUST check `docs/design` and update or add
     design documentation as needed
 
 ### Never Do:
@@ -202,3 +223,7 @@ spec:
 8. Block without timeouts
 9. Create unbounded goroutines
 10. Trust user input without validation
+
+
+## refers to
+- https://gitee.com/czsuccess/rules-2.1-optimized-zh/blob/master/%E9%A1%B9%E7%9B%AE%E8%A7%84%E5%88%99/backend-dev.mdc
