@@ -15,3 +15,4 @@ Follow the full rules in:
 - Keep domain models independent of transport/persistence.
 - Separate handlers, usecases/services, domain, and infra.
 - Validate external input at the boundary and map to domain types.
+- Check `docs/design` and update or add design documentation when service logic changed

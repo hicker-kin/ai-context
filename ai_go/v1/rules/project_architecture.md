@@ -188,7 +188,8 @@ spec:
 10. Monitor production metrics
 11. If unsure about a best practice or implementation detail, say so instead of guessing
 12. Follow RESTful API design principles and best practices
-13.
+13. For every business logic change, check `docs/design` and update or add
+    design documentation as needed
 
 ### Never Do:
 1. Put business logic in handlers
