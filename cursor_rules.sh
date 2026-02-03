@@ -41,4 +41,4 @@ case "$LANGUAGE" in
     ;;
 esac
 
-echo "Cursor rules installed for: $LANGUAGE"
+echo "Cursor rules installed for: $LANGUAGE successfully !!!"
