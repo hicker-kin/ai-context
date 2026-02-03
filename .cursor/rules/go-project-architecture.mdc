@@ -4,7 +4,9 @@ alwaysApply: true
 ---
 
 # Go Project Architecture
-Follow the full rules in `@ai_go/v1/rules/project_architecture.md`.
+Follow the full rules in:
+- `@.ai-context/rules/project_architecture.md`
+- `@ai_go/v1/rules/project_architecture.md`
 
 ## Key MUSTs
 - Keep dependencies inward; inner layers MUST NOT import outer layers.
