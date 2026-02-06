@@ -11,6 +11,7 @@ Follow the full rules in:
 
 ## Key MUSTs
 - Run `gofmt -s` (and prefer `goimports`).
+- All coding rules must follow the Formatting and Naming rules in code style.
 - Avoid repeating receiver or package names in functions.
 - Return `error` last; wrap with `fmt.Errorf("...: %w", err)`.
 - Prefer guard clauses and small, focused functions.

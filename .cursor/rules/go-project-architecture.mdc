@@ -10,9 +10,10 @@ Follow the full rules in:
 
 ## Key MUSTs
 - Keep dependencies inward; inner layers MUST NOT import outer layers.
+- All coding rules must follow the Formatting and Naming rules in code style.
 - Forbid cyclic dependencies between packages.
 - Define interfaces in the consuming layer; inject dependencies explicitly.
 - Keep domain models independent of transport/persistence.
 - Separate handlers, usecases/services, domain, and infra.
 - Validate external input at the boundary and map to domain types.
-- Check `docs/design` and update or add design documentation when service logic changed
+- For every business logic change, check `docs/design` and update or add design documentation as needed.

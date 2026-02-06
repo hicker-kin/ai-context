@@ -114,6 +114,71 @@ func (s *UserService) Create(ctx context.Context) error {
 }
 ```
 
+- Avoid repeating the package name in type names.
+- Example:
+```go
+// BAD
+package yamlconfig
+
+type YAMLConfig struct{}
+
+// GOOD
+package yamlconfig
+
+type Config struct{}
+```
+
+- Avoid repeating the package name in variable names.
+- Example:
+```go
+// BAD
+package yamlconfig
+
+var yamlConfigDefault = Config{}
+
+// GOOD
+package yamlconfig
+
+var defaultConfig = Config{}
+```
+
+- In a function, do not reuse variable names for different meanings.
+- Example:
+```go
+// BAD
+func BuildUser(ctx context.Context, cfg *Config) (*User, error) {
+    if cfg == nil {
+        cfg := DefaultConfig() // shadowed name, different meaning
+        _ = cfg
+    }
+    return nil, nil
+}
+
+// GOOD
+func BuildUser(ctx context.Context, cfg *Config) (*User, error) {
+    if cfg == nil {
+        defaultCfg := DefaultConfig()
+        _ = defaultCfg
+    }
+    return nil, nil
+}
+```
+
+- Within the same package, avoid reusing the same identifier for different
+  meanings across files.
+- Example:
+```go
+// BAD (file a)
+var cfg = LoadDBConfig()
+
+// BAD (file b)
+var cfg = LoadCacheConfig()
+
+// GOOD
+var dbCfg = LoadDBConfig()
+var cacheCfg = LoadCacheConfig()
+```
+
 ## Request DTO Tags
 - Request structs MUST specify explicit `json` tags.
 - Required fields MUST include `binding:"required"` if required.
