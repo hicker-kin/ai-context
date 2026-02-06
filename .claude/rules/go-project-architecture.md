@@ -1,0 +1,17 @@
+---
+description: Go project architecture rules (Clean Architecture)
+---
+
+# Go Project Architecture
+Follow the full rules in:
+- `@.ai-context/rules/project_architecture.md`
+- `@ai_go/v1/rules/project_architecture.md`
+
+## Key MUSTs
+- Keep dependencies inward; inner layers MUST NOT import outer layers.
+- Forbid cyclic dependencies between packages.
+- Define interfaces in the consuming layer; inject dependencies explicitly.
+- Keep domain models independent of transport/persistence.
+- Separate handlers, usecases/services, domain, and infra.
+- Validate external input at the boundary and map to domain types.
+- Check `docs/design` and update or add design documentation when service logic changed

@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(chmod:*)",
+      "Bash(./convert_to_claude.sh:*)",
+      "Bash(bash -x:*)",
+      "Bash(for f in .cursor/rules/*.mdc)",
+      "Bash(do echo \"File: $f\")",
+      "Bash(done)"
+    ]
+  }
+}
