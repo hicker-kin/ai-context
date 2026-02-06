@@ -4,6 +4,12 @@
 This document defines project structure, layering, API design, and dependency
 rules. Base code style is defined in `code_style.md`.
 
+## Go Version and Module
+- Use a **minimum Go version** (e.g. 1.21+) and set it in `go.mod` (`go 1.21`).
+- **Module path**: Prefer a clear, import-friendly path (e.g. `github.com/org/repo`); avoid `replace`/`exclude` in committed `go.mod` unless necessary.
+- Keep application code under **`internal/`** so it is not importable by other modules; put reusable libraries under **`pkg/`** if they may be used by other projects.
+- Run **`go mod tidy`** before committing; do not commit untracked or unnecessary dependencies.
+
 ## Core Principles
 - Clean Architecture with clear layer boundaries.
 - Interface-driven development and explicit dependency injection.
@@ -13,8 +19,8 @@ rules. Base code style is defined in `code_style.md`.
 ## Suggested Directory Layout
 
 ```shell
-├── cmd/               
-│   └── root.go
+├── cmd/
+│   ├── root.go
 │   └── svr.go
 ├── configs/            # configuration files
 │   └── settings.yaml   # default config (app port, DB connection, etc.)
@@ -25,12 +31,13 @@ rules. Base code style is defined in `code_style.md`.
 │   └── prod/
 │       └── ...
 ├── docs/               # project docs
-├── ├── changelog/      # changelog (e.g. CHANGELOG.md per release/iteration)
+│   ├── changelog/      # changelog (e.g. CHANGELOG.md per release/iteration)
 │   ├── design/         # design docs (diagrams, conventions, API notes)
 │   └── swagger/        # OpenAPI/Swagger specs (e.g. swagger.yaml)
 ├── internal/           # private application code (not importable)
 │   ├── domain/         # domain models
 │   ├── handler/        # controller.
+│   ├── infra/          # infrastructure (DB, cache, MQ)
 │   ├── router/         # routing definitions
 │   ├── service/        # core business logic
 │   └── service/dto/    # DTOs for DO/VO conversion
@@ -57,6 +64,9 @@ rules. Base code style is defined in `code_style.md`.
 ## Layering and Dependency Rules
 - Dependencies MUST go inward: an outer layer may depend on the same layer or a
   deeper layer; inner layers MUST NOT import outer layers.
+- **`internal/infra` and other internal packages** (e.g. `domain`, repo implementations)
+  **MUST only be used by `internal/service`.** Handlers and router must not import or
+  call infra, domain, or repositories directly; they call the service layer only.
 - Cyclic dependencies between packages are forbidden.
 
 ## API Design
@@ -70,6 +80,12 @@ rules. Base code style is defined in `code_style.md`.
 - Standard log fields: request_id, trace_id, user_id, service, method, status.
 - Metrics: request count, latency, error rate for each endpoint.
 - Tracing: propagate context; span per inbound request.
+
+## Health Checks
+- Expose **liveness** (e.g. `/healthz`) and **readiness** (e.g. `/ready`) endpoints; use them in Kubernetes `livenessProbe` and `readinessProbe` respectively.
+- **Liveness**: Indicates the process is running. Keep it cheap and dependency-free; if it fails, the runtime may restart the pod.
+- **Readiness**: Indicates the app can accept traffic. Here you MAY check critical dependencies (DB, Redis, etc.). If a dependency is down, return non-2xx so the pod is removed from service until it is ready again.
+- Document the exact semantics and status codes of `/healthz` and `/ready` (e.g. in `docs/design` or API spec).
 
 ## Configuration
 - Config from environment or config files; avoid global mutable state.
@@ -90,7 +106,33 @@ rules. Base code style is defined in `code_style.md`.
 
 ## 🛠️ Technology Stack
 
+### Go Stack (primary)
+
+Go-focused frameworks and common libraries for reference.
+
+| Category | Component | Description / use case |
+|----------|-----------|------------------------|
+| **Web framework** | [Gin](https://github.com/gin-gonic/gin) | Lightweight HTTP router, binding, middleware; widely used |
+| | [Echo](https://github.com/labstack/echo) | HTTP framework with middleware, binding, and good DX |
+| | [Kratos](https://github.com/go-kratos/kratos) | BFF/microservice framework; transport-agnostic, DI, config |
+| **ORM** | [ent](https://entgo.io/) | Schema-first ORM; codegen, migrations, graph traversal |
+| | [GORM](https://gorm.io/) | Convention-based ORM; migrations, hooks, many DBs |
+| **CLI / app bootstrap** | [Cobra](https://github.com/spf13/cobra) | CLI apps, subcommands, flags |
+| **Scheduling** | [robfig/cron](https://github.com/robfig/cron) | Cron expressions for periodic jobs |
+| **Config** | [Viper](https://github.com/spf13/viper) | Config from files, env, flags; often used with Cobra |
+| **Messaging** | [IBM/sarama](https://github.com/IBM/sarama) | Kafka client (producer/consumer) |
+| **Logging** | [zap](https://github.com/uber-go/zap), [zerolog](https://github.com/rs/zerolog) | Structured, high-performance logging |
+| **Testing** | [testify](https://github.com/stretchr/testify) | Assertions and mocks; [gomock](https://github.com/golang/mock) for generated mocks |
+| **Redis** | [go-redis](https://github.com/redis/go-redis) | Redis client; cluster, sentinel, cache, distributed lock |
+| **HTTP client** | stdlib `net/http`, [resty](https://github.com/go-resty/resty) | Outbound HTTP; resty for convenience and retries |
+| **Resilience** | [golang.org/x/time/rate](https://pkg.go.dev/golang.org/x/time/rate), [sentinel-golang](https://github.com/alibaba/sentinel-golang) | Rate limiting; circuit breaker and flow control |
+| **Tracing** | [OpenTelemetry Go](https://opentelemetry.io/docs/instrumentation/go/) | Distributed tracing; propagate context and export spans |
+| **Migrations** | [golang-migrate](https://github.com/golang-migrate/migrate), [atlas](https://atlasgo.io/) | DB schema migrations; versioned SQL or declarative |
+
 ### Languages & Frameworks
+
+The list below is a **general reference** across stacks. For **Go projects**, follow the **Go Stack (primary)** table and the directory layout above; the entries here are for context only.
+
 - **Java** - Spring Boot, Spring Security, JPA
 - **Python** - FastAPI, Django, SQLAlchemy
 - **Node.js** - Express, Koa, NestJS
@@ -108,6 +150,24 @@ rules. Base code style is defined in `code_style.md`.
 - **CI/CD** - GitHub Actions, Jenkins
 - **Monitoring** - Prometheus, Grafana
 - **Logging** - ELK Stack
+
+### Common Middleware Reference
+
+Common mainstream middleware by category and typical use cases (for reference when choosing components).
+
+| Category | Middleware | Typical use cases | Notes |
+|----------|------------|------------------|-------|
+| **Relational DB** | MySQL | Primary app DB, transactional read/write, OLTP | Mature ecosystem; master-replica and sharding common |
+| | PostgreSQL | Complex queries, JSON, extended types, OLTP | Strong consistency and rich types |
+| **Analytical DB** | ClickHouse | Log/event analytics, real-time reporting, OLAP wide tables | Columnar, high compression, good for aggregations |
+| | StarRocks | Real-time data warehouse, OLAP, lakehouse, multi-table JOIN | MySQL-protocol compatible; real-time ingest and analytics |
+| **Cache** | Redis | Session, hot-data cache, distributed lock, rate limit, simple queues | Standalone/cluster/sentinel; String/Hash/List etc. |
+| | Memcached | Simple KV cache, horizontal scaling across instances | Option when persistence not required |
+| **Message Queue** | Kafka | Log ingestion, event streaming, data pipelines, high-throughput decoupling | Partitioning, persistence, replay |
+| | RabbitMQ | Task queues, RPC, complex routing, transactional messages | Flexible exchanges and bindings |
+| | RocketMQ | Order/transaction messages, ordered and delayed messages | Common in Alibaba ecosystem |
+| **Search** | Elasticsearch | Full-text search, log search, APM, complex aggregations | Lucene-based; suited for search and logging |
+| **Object / Blob storage** | MinIO / S3 | Images, files, backups, data lake storage | Object storage; S3-compatible API |
 
 ## Deployment
 

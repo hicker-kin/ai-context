@@ -26,13 +26,14 @@ import (
 
 // GOOD
 import (
+    "error"
     "fmt"
 
-    "github.com/acme/foo"
+    "github.com/acme/foo" // third-party
 
-    "mycorp/sdk/foo"
+    "mycorp/sdk/foo"  // second-party
 
-    "mycorp/app/internal/bar"
+    "mycorp/app/internal/bar" // local
 )
 ```
 
@@ -179,10 +180,29 @@ var dbCfg = LoadDBConfig()
 var cacheCfg = LoadCacheConfig()
 ```
 
+- Use `const` for invariants; use `iota` for enumerated constants.
+- Example:
+```go
+// GOOD
+const defaultTimeout = 10 * time.Second
+
+type Status int
+const (
+    StatusUnknown Status = iota
+    StatusActive
+    StatusDone
+)
+```
+
 ## Request DTO Tags
+- When using **Gin**, use the `binding` tag for request-body validation; when using
+  other frameworks (e.g. Echo, Fiber), follow that framework's validation mechanism
+  and tag/option conventions.
 - Request structs MUST specify explicit `json` tags.
-- Required fields MUST include `binding:"required"` if required.
-- If a field has constraints, include thresholds in `binding` (e.g. `min=3,max=64`).
+- Required fields MUST include `binding:"required"` if required (Gin), or the
+  equivalent for your framework.
+- If a field has constraints, include thresholds in `binding` (e.g. `min=3,max=64`)
+  for Gin, or the equivalent for your framework.
 - Optional fields SHOULD use `omitempty` in `json` tags.
 - Example:
 ```go
@@ -202,6 +222,13 @@ type CreateCategoryReq struct {
     Description string `json:"description,omitempty"`
 }
 ```
+
+## Response DTO Tags
+- Response structs MUST specify explicit `json` tags for API output.
+- Optional or zero-value fields SHOULD use `omitempty` so absent values are omitted
+  from JSON when appropriate.
+- Prefer consistent field naming (e.g. snake_case in JSON if that is your API
+  convention) and document the response shape (e.g. in OpenAPI).
 
 ## Functions and Methods
 - Use verbs for actions (CreateUser, ValidateEmail).
@@ -256,6 +283,30 @@ func Load() (error, *Config) { return nil, nil }
 
 // GOOD
 func Load() (*Config, error) { return nil, nil }
+```
+
+- Use a **pointer receiver** when the method mutates the receiver, when the type is
+  large, or for consistency if any method needs a pointer; use a **value receiver**
+  for small, immutable types.
+- Prefer passing **pointers** for large structs or when the callee may need to modify;
+  pass by value for small types and to avoid accidental mutation.
+
+## Interfaces
+- Name interfaces by behavior (e.g. `Reader`, `Repository`), not by implementation
+  (e.g. avoid `ReaderInterface`). Prefer one or a few methods per interface when
+  possible.
+- Define interfaces in the **consuming** layer (e.g. in `service` that uses a repo),
+  not next to the implementation; see `project_architecture.md`.
+
+## Slices and nil
+- A nil slice is a valid "no elements" value; JSON encoding typically produces `[]`.
+  Be consistent within a package: either return `nil` or `[]T{}` for "no results",
+  and prefer `nil` unless the caller needs a non-nil empty slice for a specific reason.
+- Example:
+```go
+// Both are valid; pick one convention per package.
+func FindAll() []Item { return nil }
+func FindAll() []Item { return []Item{} }
 ```
 
 ## Errors
@@ -325,6 +376,21 @@ var ErrNotFound = errors.New("Not Found.")
 
 // GOOD
 var ErrNotFound = errors.New("not found")
+```
+
+- Do not panic in service or handler code; return errors. Panic is only acceptable
+  in package `main`/init or when a programming bug is unrecoverable.
+- Example:
+```go
+// BAD (in service/handler)
+if err != nil {
+    panic(err)
+}
+
+// GOOD
+if err != nil {
+    return fmt.Errorf("operation: %w", err)
+}
 ```
 
 ## Control Flow and Style
@@ -516,6 +582,9 @@ func Copy(c *Counter) *Counter { // avoid copying mutex
 }
 ```
 
+- Use `defer` for cleanup (e.g. `defer f.Close()`, `defer mu.Unlock()`), so it runs
+  on all return paths and keeps code next to the acquire.
+
 ## Testing (Style)
 - Prefer table-driven tests.
 - Example:
@@ -604,7 +673,7 @@ func TestWithMock(t *testing.T) {
     mockModel.EXPECT().
         FindOne(gomock.Any(), int64(1)).
         Return(&model.Users{
-            Id:    1,
+            ID:    1,
             Name:  "John",
             Email: "john@example.com",
         }, nil)
@@ -669,90 +738,6 @@ log.Println("error")       // ❌ Use l.Logger instead
 l.Logger.Infof("processing %d items", len(items))  // ✅
 ```
 
-## Deployment
-
-### ✅ Docker
-
-```dockerfile
-# Dockerfile
-FROM golang:1.21-alpine AS builder
-
-WORKDIR /app
-COPY go.mod go.sum ./
-RUN go mod download
-
-COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -o service .
-
-FROM alpine:latest
-RUN apk --no-cache add ca-certificates tzdata
-
-WORKDIR /app
-COPY --from=builder /app/service .
-COPY --from=builder /app/etc ./etc
-
-EXPOSE 8888
-CMD ["./service", "-f", "etc/config.yaml"]
-```
-
-### ✅ Kubernetes
-
-```yaml
-# deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: user-api
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: user-api
-  template:
-    metadata:
-      labels:
-        app: user-api
-    spec:
-      containers:
-      - name: user-api
-        image: user-api:latest
-        ports:
-        - containerPort: 8888
-        env:
-        - name: USER_API_MODE
-          value: "pro"
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 8888
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: 8888
-          initialDelaySeconds: 5
-          periodSeconds: 5
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: user-api
-spec:
-  selector:
-    app: user-api
-  ports:
-  - port: 8888
-    targetPort: 8888
-  type: ClusterIP
-```
 
 ## Summary
 

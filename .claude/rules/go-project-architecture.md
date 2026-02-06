@@ -9,6 +9,7 @@ Follow the full rules in:
 
 ## Key MUSTs
 - Keep dependencies inward; inner layers MUST NOT import outer layers.
+- `internal/infra` and other internal packages (e.g. domain, repos) may only be used by `internal/service`; handlers must not call infra/domain directly.
 - Forbid cyclic dependencies between packages.
 - Define interfaces in the consuming layer; inject dependencies explicitly.
 - Keep domain models independent of transport/persistence.

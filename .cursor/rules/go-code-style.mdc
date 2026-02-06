@@ -18,4 +18,4 @@ Follow the full rules in:
 - Exported identifiers need proper godoc comments.
 - `context.Context` is the first param; do not store it in structs.
 - Prevent goroutine leaks; do not copy `sync.Mutex`/`sync.WaitGroup`.
-- Request DTOs must set `json` tags and `binding` rules.
+- Request DTOs: explicit `json` tags; with Gin use `binding`; with other frameworks use their validation.
