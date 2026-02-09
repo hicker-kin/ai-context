@@ -15,8 +15,8 @@ Follow the full rules in:
 
 ## Key MUSTs
 
-- Keep dependencies inward; inner layers MUST NOT import outer layers.
-- `internal/infra` and other internal packages (e.g. domain, repos) may only be used by `internal/service`; handlers must not call infra/domain directly.
+- Keep dependencies inward; inner layers MUST NOT import outer layers (exception: inner may use an outer package only if that outer package does not depend on any other internal package, e.g. infra as a leaf used by service).
+- `internal/dao`, `internal/storage`, and `internal/domain` only used by `internal/service`; handlers must not call dao/storage/domain/infra directly.
 - All coding rules must follow the Formatting and Naming rules in code style.
 - Forbid cyclic dependencies between packages.
 - Define interfaces in the consuming layer; inject dependencies explicitly.

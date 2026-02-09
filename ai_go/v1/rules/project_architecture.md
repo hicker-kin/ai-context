@@ -57,12 +57,27 @@ After scaffolding, align the generated layout with the **Suggested Directory Lay
 │   ├── design/         # design docs (diagrams, conventions, API notes)
 │   └── swagger/        # OpenAPI/Swagger specs (e.g. swagger.yaml)
 ├── internal/           # private application code (not importable)
-│   ├── domain/         # domain models
-│   ├── handler/        # controller.
-│   ├── infra/          # infrastructure (DB, cache, MQ)
+│   ├── domain/         # domain models / entities (or models/)
+│   ├── dao/            # (optional) data access when maintained manually; service calls dao
+│   ├── server/         # server context
+│   │   ├── grpc/       # grpc server
+│   │   ├── http/       # http server
+│   │   │   └── handler/   # handler (controller)
+│   │   │       ├── category.go
+│   │   │       ├── flow.go
+│   │   │       └── http.go
+│   │   ├── server_i.go
+│   │   └── svr.go
+│   ├── infra/          # infrastructure: cache, MQ, external clients; used by service when infra does not depend on other internal
 │   ├── router/         # routing definitions
-│   ├── service/        # core business logic
-│   └── service/dto/    # DTOs for DO/VO conversion
+│   └── service/        # core business logic
+│       ├── base.go
+│       ├── category/
+│       │   └── category.go
+│       ├── dto/
+│       │   └── category.go
+│       ├── flow/
+│           └── flow.go
 ├── pkg/                # reusable shared libraries
 │   ├── auth/
 │   ├── log/
@@ -79,17 +94,20 @@ After scaffolding, align the generated layout with the **Suggested Directory Lay
 └── README.md
 ```
 
-- `internal/handler` - HTTP/gRPC transport adapters
-- `internal/infra` - cache, MQ, external clients
+- `internal/domain` (or `models/`) – domain models / entities.
+- `internal/dao` – (optional) data access layer when maintained manually; only used by `service`. Omit when using generated access (e.g. ent under `storage/`).
+- `internal/storage` – (optional) generated data access (e.g. `storage/databases/ent`); only used by `service`. Use either `dao` or `storage` per project.
+- `internal/handler` (or `server/http/handler`, `server/grpc`) – HTTP/gRPC transport adapters; call service only.
+- `internal/infra` – cache, MQ, external clients. May be used by `service` only when infra does not depend on any other internal package (see layering rules).
+- `internal/router` – routing definitions.
+- `internal/service` – core business logic; `service/dto` for request/response DTOs.
 - `configs`, `migrations`, `scripts`, `deployments`
 
 ## Layering and Dependency Rules
 
-- Dependencies MUST go inward: an outer layer may depend on the same layer or a
-  deeper layer; inner layers MUST NOT import outer layers.
-- **`internal/infra` and other internal packages** (e.g. `domain`, repo implementations)
-  **MUST only be used by `internal/service`.** Handlers and router must not import or
-  call infra, domain, or repositories directly; they call the service layer only.
+- **Default: dependencies go inward.** An outer layer may depend on the same layer or a deeper layer; inner layers MUST NOT import outer layers in the general case.
+- **Handlers and router** must not import or call `dao`, `storage`, `domain`, or `infra` directly; they call the **service** layer only. **`internal/dao`**, **`internal/storage`**, and **`internal/domain`** are used only by `internal/service` (or by each other in a controlled way, e.g. dao using domain types).
+- **Exception (inner may use outer):** An inner package may depend on an outer package **only if** that outer package **does not depend on any other internal package**. For example, `internal/infra` that provides only cache/MQ clients and does **not** import `service`, `dao`, or other business packages may be used by `internal/service`. The outer package must remain a “leaf” with no inward references so that no cycle is introduced.
 - Cyclic dependencies between packages are forbidden.
 
 ## API Design
