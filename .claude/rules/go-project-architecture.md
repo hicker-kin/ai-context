@@ -3,11 +3,17 @@ description: Go project architecture rules (Clean Architecture)
 ---
 
 # Go Project Architecture
+
 Follow the full rules in:
-- `@.ai-context/rules/project_architecture.md`
+
 - `@ai_go/v1/rules/project_architecture.md`
 
+## When initializing a new project
+
+- Use Cobra-CLI to scaffold; see **Project Initialization (Cobra)** in @ai_go/v1/rules/project_architecture.md for `cobra-cli init` (author, license, pkg-name) and `cobra-cli add <cmd>`.
+
 ## Key MUSTs
+
 - Keep dependencies inward; inner layers MUST NOT import outer layers.
 - `internal/infra` and other internal packages (e.g. domain, repos) may only be used by `internal/service`; handlers must not call infra/domain directly.
 - Forbid cyclic dependencies between packages.

@@ -5,11 +5,14 @@ paths:
 ---
 
 # Go Code Style (Summary)
+
 Follow the full rules in:
+
 - `@.ai-context/rules/code_style.md`
 - `@ai_go/v1/rules/code_style.md`
 
 ## Key MUSTs
+
 - Run `gofmt -s` (and prefer `goimports`).
 - Avoid repeating receiver or package names in functions.
 - Return `error` last; wrap with `fmt.Errorf("...: %w", err)`.

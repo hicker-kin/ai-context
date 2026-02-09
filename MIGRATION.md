@@ -16,10 +16,12 @@ Both tools can coexist in the same project!
 ## Format Differences
 
 ### 1. File Extension
+
 - **Cursor**: `.mdc` files
 - **Claude**: `.md` files
 
 ### 2. Directory Structure
+
 ```
 project/
 ├── .cursor/
@@ -40,6 +42,7 @@ project/
 ### 3. YAML Frontmatter
 
 **Cursor format (.mdc):**
+
 ```yaml
 ---
 description: Go code style summary
@@ -49,6 +52,7 @@ alwaysApply: false
 ```
 
 **Claude format (.md):**
+
 ```yaml
 ---
 description: Go code style summary
@@ -68,6 +72,7 @@ description: Go project architecture rules
 ### 4. File References
 
 Both use the same `@` syntax:
+
 ```markdown
 See full rules:
 - @.ai-context/rules/code_style.md
@@ -151,9 +156,11 @@ echo "Conversion complete!"
 ## Project Configuration
 
 ### Cursor: `.cursor/rules/README.md`
+
 Simple documentation only.
 
 ### Claude: `.claude/CLAUDE.md`
+
 Main project configuration file:
 
 ```markdown
@@ -172,6 +179,7 @@ For complete documentation:
 ## Best Practices
 
 ### 1. Keep Both Formats (Recommended)
+
 Support both tools in your repository:
 
 ```
@@ -184,7 +192,9 @@ project/
 Both installers download to `.ai-context/rules/`, so detailed docs are shared.
 
 ### 2. Version Control
+
 Add to `.gitignore` if rules are user-specific:
+
 ```
 .cursor/rules/
 .claude/rules/
@@ -193,6 +203,7 @@ CLAUDE.local.md
 ```
 
 Or commit them for team-wide standards:
+
 ```
 # Keep in git
 .cursor/rules/
@@ -201,7 +212,9 @@ Or commit them for team-wide standards:
 ```
 
 ### 3. Shared Documentation
+
 Keep detailed rules in `.ai-context/rules/`:
+
 - Both tools reference the same detailed docs
 - Update once, benefits both formats
 - Easier to maintain consistency
@@ -209,11 +222,13 @@ Keep detailed rules in `.ai-context/rules/`:
 ## Testing Your Rules
 
 ### Cursor
+
 1. Open project in Cursor IDE
 2. Create a `.go` file
 3. Check if AI suggestions follow rules
 
 ### Claude Code
+
 1. Run `claude` in project directory
 2. Ask Claude to review code or write new code
 3. Verify it follows the rules
@@ -223,21 +238,25 @@ Keep detailed rules in `.ai-context/rules/`:
 ### Rules Not Loading in Claude
 
 1. Check file location:
+
    ```bash
    ls -la .claude/rules/
    ```
 
 2. Verify frontmatter syntax:
+
    ```bash
    head -5 .claude/rules/go-code-style.md
    ```
 
 3. Check CLAUDE.md references:
+
    ```bash
    cat .claude/CLAUDE.md
    ```
 
 4. Run Claude with verbose output:
+
    ```bash
    claude --verbose
    ```
@@ -245,6 +264,7 @@ Keep detailed rules in `.ai-context/rules/`:
 ### Path Patterns Not Matching
 
 Claude uses glob patterns:
+
 - `**/*.go` - All .go files recursively
 - `src/**/*.go` - Only under src/
 - `**/*_test.go` - All test files
@@ -253,6 +273,7 @@ Claude uses glob patterns:
 ## Example: Complete Migration
 
 Starting with Cursor setup:
+
 ```bash
 # Current structure
 .cursor/rules/go-code-style.mdc
@@ -260,11 +281,13 @@ Starting with Cursor setup:
 ```
 
 Run Claude installer:
+
 ```bash
 sh claude_rules.sh go
 ```
 
 Final structure:
+
 ```bash
 .cursor/rules/go-code-style.mdc
 .cursor/rules/go-project-architecture.mdc

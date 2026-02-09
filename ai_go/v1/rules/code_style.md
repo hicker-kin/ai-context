@@ -1,21 +1,25 @@
 # Go Code Style
 
 ## Scope
+
 This document defines base Go syntax, naming, and style rules. Architecture and
 project structure are defined in `project_architecture.md`.
 
 ## Rule Levels
+
 - MUST: mandatory
 - SHOULD: recommended
 - MAY: optional
 
 ## Formatting
+
 - MUST run `gofmt -s` on all Go files.
 - SHOULD use `goimports` to manage imports.
 - SHOULD keep lines reasonably short (<= 120) unless it harms readability.
 - SHOULD group imports as: standard library, third-party, local. Use blank lines
   between groups.
 - Example:
+
 ```go
 // BAD
 import (
@@ -38,9 +42,11 @@ import (
 ```
 
 ## File Layout Order
+
 - `package`, `import`, `const`, `var`, `type`, `func`
 - Place methods near their receiver type.
 - Example:
+
 ```go
 // BAD
 package user
@@ -62,8 +68,10 @@ func (u *User) Name() string { return "" }
 ```
 
 ## Naming
+
 - Package names: lower-case, short, singular, no underscores.
 - Example:
+
 ```go
 // BAD
 package user_profiles
@@ -74,6 +82,7 @@ package user
 
 - File names: lower-case; use underscores only when needed for readability.
 - Example:
+
 ```go
 // BAD
 // UserProfile.go
@@ -83,6 +92,7 @@ package user
 
 - Exported identifiers: CamelCase; unexported identifiers: lower camel.
 - Example:
+
 ```go
 // BAD
 type userService struct{}
@@ -93,6 +103,7 @@ type UserService struct{}
 
 - Abbreviations: use consistent forms (ID, URL, HTTP, JSON, DB).
 - Example:
+
 ```go
 // BAD
 userId := "123"
@@ -103,6 +114,7 @@ userID := "123"
 
 - Receiver names: 1-2 letters, consistent per type.
 - Example:
+
 ```go
 // BAD
 func (service *UserService) Create(ctx context.Context) error {
@@ -117,6 +129,7 @@ func (s *UserService) Create(ctx context.Context) error {
 
 - Avoid repeating the package name in type names.
 - Example:
+
 ```go
 // BAD
 package yamlconfig
@@ -131,6 +144,7 @@ type Config struct{}
 
 - Avoid repeating the package name in variable names.
 - Example:
+
 ```go
 // BAD
 package yamlconfig
@@ -145,6 +159,7 @@ var defaultConfig = Config{}
 
 - In a function, do not reuse variable names for different meanings.
 - Example:
+
 ```go
 // BAD
 func BuildUser(ctx context.Context, cfg *Config) (*User, error) {
@@ -168,6 +183,7 @@ func BuildUser(ctx context.Context, cfg *Config) (*User, error) {
 - Within the same package, avoid reusing the same identifier for different
   meanings across files.
 - Example:
+
 ```go
 // BAD (file a)
 var cfg = LoadDBConfig()
@@ -182,6 +198,7 @@ var cacheCfg = LoadCacheConfig()
 
 - Use `const` for invariants; use `iota` for enumerated constants.
 - Example:
+
 ```go
 // GOOD
 const defaultTimeout = 10 * time.Second
@@ -195,6 +212,7 @@ const (
 ```
 
 ## Request DTO Tags
+
 - When using **Gin**, use the `binding` tag for request-body validation; when using
   other frameworks (e.g. Echo, Fiber), follow that framework's validation mechanism
   and tag/option conventions.
@@ -205,6 +223,7 @@ const (
   for Gin, or the equivalent for your framework.
 - Optional fields SHOULD use `omitempty` in `json` tags.
 - Example:
+
 ```go
 // BAD
 type CreateCategoryReq struct {
@@ -224,6 +243,7 @@ type CreateCategoryReq struct {
 ```
 
 ## Response DTO Tags
+
 - Response structs MUST specify explicit `json` tags for API output.
 - Optional or zero-value fields SHOULD use `omitempty` so absent values are omitted
   from JSON when appropriate.
@@ -231,8 +251,10 @@ type CreateCategoryReq struct {
   convention) and document the response shape (e.g. in OpenAPI).
 
 ## Functions and Methods
+
 - Use verbs for actions (CreateUser, ValidateEmail).
 - Example:
+
 ```go
 // BAD
 func UserCreation(u User) error { return nil }
@@ -243,6 +265,7 @@ func CreateUser(u User) error { return nil }
 
 - Avoid repeating the receiver type in method names.
 - Example:
+
 ```go
 // BAD
 func (u *User) UserValidateEmail() error { return nil }
@@ -253,6 +276,7 @@ func (u *User) ValidateEmail() error { return nil }
 
 - Avoid repeating the package name in function names.
 - Example:
+
 ```go
 // BAD
 package yamlconfig
@@ -267,6 +291,7 @@ func Parse(input string) (*Config, error) { return nil, nil }
 
 - Avoid "Get" prefix for simple accessors; use noun-like names.
 - Example:
+
 ```go
 // BAD
 func (c *Config) GetJobName(key string) (string, bool) { return "", false }
@@ -277,6 +302,7 @@ func (c *Config) JobName(key string) (string, bool) { return "", false }
 
 - Return `error` as the last result.
 - Example:
+
 ```go
 // BAD
 func Load() (error, *Config) { return nil, nil }
@@ -292,6 +318,7 @@ func Load() (*Config, error) { return nil, nil }
   pass by value for small types and to avoid accidental mutation.
 
 ## Interfaces
+
 - Name interfaces by behavior (e.g. `Reader`, `Repository`), not by implementation
   (e.g. avoid `ReaderInterface`). Prefer one or a few methods per interface when
   possible.
@@ -299,10 +326,12 @@ func Load() (*Config, error) { return nil, nil }
   not next to the implementation; see `project_architecture.md`.
 
 ## Slices and nil
+
 - A nil slice is a valid "no elements" value; JSON encoding typically produces `[]`.
   Be consistent within a package: either return `nil` or `[]T{}` for "no results",
   and prefer `nil` unless the caller needs a non-nil empty slice for a specific reason.
 - Example:
+
 ```go
 // Both are valid; pick one convention per package.
 func FindAll() []Item { return nil }
@@ -310,8 +339,10 @@ func FindAll() []Item { return []Item{} }
 ```
 
 ## Errors
+
 - Wrap errors with context using `fmt.Errorf("context: %w", err)`.
 - Example:
+
 ```go
 // BAD
 if err != nil {
@@ -340,6 +371,7 @@ func (l *Logic) Operation() error {
 
 - Define sentinel errors as `var ErrNotFound = errors.New("not found")`.
 - Example:
+
 ```go
 // BAD
 func Find(id string) error {
@@ -356,6 +388,7 @@ func Find(id string) error {
 
 - Use `errors.Is`/`errors.As`; avoid string comparisons.
 - Example:
+
 ```go
 // BAD
 if err != nil && err.Error() == "not found" {
@@ -370,6 +403,7 @@ if errors.Is(err, ErrNotFound) {
 
 - Error strings are lower-case with no trailing punctuation.
 - Example:
+
 ```go
 // BAD
 var ErrNotFound = errors.New("Not Found.")
@@ -381,6 +415,7 @@ var ErrNotFound = errors.New("not found")
 - Do not panic in service or handler code; return errors. Panic is only acceptable
   in package `main`/init or when a programming bug is unrecoverable.
 - Example:
+
 ```go
 // BAD (in service/handler)
 if err != nil {
@@ -394,8 +429,10 @@ if err != nil {
 ```
 
 ## Control Flow and Style
+
 - Prefer guard clauses; avoid `else` after `return`.
 - Example:
+
 ```go
 // BAD
 if err != nil {
@@ -413,6 +450,7 @@ return nil
 
 - Avoid deep nesting; keep functions focused and small.
 - Example:
+
 ```go
 // BAD
 if ok {
@@ -438,6 +476,7 @@ doWork()
 
 - Prefer `switch` for multi-branch logic.
 - Example:
+
 ```go
 // BAD
 if status == "new" {
@@ -461,6 +500,7 @@ default:
 
 - Avoid naked returns except in very short functions.
 - Example:
+
 ```go
 // BAD
 func (s *Store) Find(id string) (u User, err error) {
@@ -482,8 +522,10 @@ func (s *Store) Find(id string) (User, error) {
 ```
 
 ## Comments
+
 - Exported identifiers MUST have godoc comments starting with the name.
 - Example:
+
 ```go
 // BAD
 // handles user storage
@@ -496,6 +538,7 @@ type UserStore struct{}
 
 - Comments explain "why", not "what".
 - Example:
+
 ```go
 // BAD
 i++ // increment i
@@ -506,6 +549,7 @@ i++ // skip sentinel value 0
 
 - Remove stale comments; avoid commented-out code.
 - Example:
+
 ```go
 // BAD
 // old behavior kept for reference
@@ -516,8 +560,10 @@ i++ // skip sentinel value 0
 ```
 
 ## Context and Concurrency
+
 - Pass `context.Context` as the first parameter for request-scoped APIs.
 - Example:
+
 ```go
 // BAD
 func (s *Service) Do(userID string, ctx context.Context) error { return nil }
@@ -528,6 +574,7 @@ func (s *Service) Do(ctx context.Context, userID string) error { return nil }
 
 - Do not store `context.Context` in structs.
 - Example:
+
 ```go
 // BAD
 type Service struct {
@@ -542,6 +589,7 @@ func (s *Service) Do(ctx context.Context) error { return nil }
 
 - Goroutines MUST have a clear cancel/exit path to avoid leaks.
 - Example:
+
 ```go
 // BAD
 go func() {
@@ -565,6 +613,7 @@ go func(ctx context.Context) {
 
 - Do not copy values containing `sync.Mutex`/`sync.WaitGroup`.
 - Example:
+
 ```go
 // BAD
 type Counter struct {
@@ -586,8 +635,10 @@ func Copy(c *Counter) *Counter { // avoid copying mutex
   on all return paths and keeps code next to the acquire.
 
 ## Testing (Style)
+
 - Prefer table-driven tests.
 - Example:
+
 ```go
 // BAD
 func TestDouble_Zero(t *testing.T) { /* ... */ }
@@ -615,6 +666,7 @@ func TestDouble(t *testing.T) {
 
 - Use subtests with clear case names.
 - Example:
+
 ```go
 // BAD
 t.Run("case1", func(t *testing.T) { /* ... */ })
@@ -625,6 +677,7 @@ t.Run("missing_email", func(t *testing.T) { /* ... */ })
 
 - Use `t.Helper()` in helpers.
 - Example:
+
 ```go
 // BAD
 func mustOpen(t *testing.T, path string) *os.File {
@@ -648,6 +701,7 @@ func mustOpen(t *testing.T, path string) *os.File {
 
 - Tests MUST be deterministic.
 - Example:
+
 ```go
 // BAD
 seed := time.Now().UnixNano()
@@ -692,8 +746,10 @@ func TestWithMock(t *testing.T) {
 ```
 
 ## Logging (Style Only)
+
 - Log errors at boundaries; avoid logging the same error at multiple layers.
 - Example:
+
 ```go
 // BAD
 if err := s.repo.Save(ctx, u); err != nil {
@@ -709,6 +765,7 @@ if err := s.repo.Save(ctx, u); err != nil {
 
 - Prefer structured logging with key-value fields when available.
 - Example:
+
 ```go
 // BAD
 logger.Infof("user_id=%s status=%s", userID, status)
@@ -738,10 +795,10 @@ log.Println("error")       // ❌ Use l.Logger instead
 l.Logger.Infof("processing %d items", len(items))  // ✅
 ```
 
-
 ## Summary
 
-### Always Do:
+### Always Do
+
 1. Keep handlers thin, logic thick
 2. Use structured logging with context
 3. Handle all errors explicitly
@@ -755,7 +812,8 @@ l.Logger.Infof("processing %d items", len(items))  // ✅
 11. If unsure about a best practice or implementation detail, say so instead of guessing
 12. Follow RESTful API design principles and best practices
 
-### Never Do:
+### Never Do
+
 1. Put business logic in handlers
 2. Log sensitive information
 3. Ignore errors
@@ -767,9 +825,9 @@ l.Logger.Infof("processing %d items", len(items))  // ✅
 9. Create unbounded goroutines
 10. Trust user input without validation
 
-
 ## References
-- Effective Go: https://go.dev/doc/effective_go
-- Go Code Review Comments: https://go.dev/wiki/CodeReviewComments
-- Google Go Style Guide: https://google.github.io/styleguide/go/
-- Google Go Style Best Practices: https://google.github.io/styleguide/go/best-practices
+
+- Effective Go: <https://go.dev/doc/effective_go>
+- Go Code Review Comments: <https://go.dev/wiki/CodeReviewComments>
+- Google Go Style Guide: <https://google.github.io/styleguide/go/>
+- Google Go Style Best Practices: <https://google.github.io/styleguide/go/best-practices>

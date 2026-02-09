@@ -1,20 +1,42 @@
 # Project Architecture
 
 ## Scope
+
 This document defines project structure, layering, API design, and dependency
 rules. Base code style is defined in `code_style.md`.
 
 ## Go Version and Module
+
 - Use a **minimum Go version** (e.g. 1.21+) and set it in `go.mod` (`go 1.21`).
 - **Module path**: Prefer a clear, import-friendly path (e.g. `github.com/org/repo`); avoid `replace`/`exclude` in committed `go.mod` unless necessary.
 - Keep application code under **`internal/`** so it is not importable by other modules; put reusable libraries under **`pkg/`** if they may be used by other projects.
 - Run **`go mod tidy`** before committing; do not commit untracked or unnecessary dependencies.
 
 ## Core Principles
+
 - Clean Architecture with clear layer boundaries.
 - Interface-driven development and explicit dependency injection.
 - Composition over inheritance; small, purpose-specific interfaces.
 - Domain models are independent of transport and persistence concerns.
+
+## Project Initialization (Cobra)
+
+When the user needs to **initialize a new Go (CLI) project**, use Cobra-CLI to scaffold and follow this section.
+
+- **Install** (if needed): `go install github.com/spf13/cobra-cli@latest`
+- **Init with author and license**:
+  - `cobra-cli init -a "YourName <you@example.com>" -l mit`
+  - Use your real author string in quotes; `-l mit` for MIT license.
+- **Init with custom module path** (must match `go.mod`):
+  - `cobra-cli init --pkg-name <module-path>`
+  - Example: `cobra-cli init --pkg-name gitlab.com/myapp/demo`
+- **Add subcommands** as needed:
+  - `cobra-cli add cache`
+  - `cobra-cli add server`
+  - `cobra-cli add migrate`
+  - Add other commands (e.g. `version`, `run`) according to project needs.
+
+After scaffolding, align the generated layout with the **Suggested Directory Layout** below (e.g. move or add `internal/`, `configs/`, etc.).
 
 ## Suggested Directory Layout
 
@@ -62,6 +84,7 @@ rules. Base code style is defined in `code_style.md`.
 - `configs`, `migrations`, `scripts`, `deployments`
 
 ## Layering and Dependency Rules
+
 - Dependencies MUST go inward: an outer layer may depend on the same layer or a
   deeper layer; inner layers MUST NOT import outer layers.
 - **`internal/infra` and other internal packages** (e.g. `domain`, repo implementations)
@@ -70,6 +93,7 @@ rules. Base code style is defined in `code_style.md`.
 - Cyclic dependencies between packages are forbidden.
 
 ## API Design
+
 - Version endpoints (`/v1`) and document compatibility guarantees.
 - Define a standard error response shape (code, message, details, request_id).
 - Validate all external input in handlers; map to domain types.
@@ -77,30 +101,36 @@ rules. Base code style is defined in `code_style.md`.
 - For gRPC, use canonical status codes and structured error details.
 
 ## Observability
+
 - Standard log fields: request_id, trace_id, user_id, service, method, status.
 - Metrics: request count, latency, error rate for each endpoint.
 - Tracing: propagate context; span per inbound request.
 
 ## Health Checks
+
 - Expose **liveness** (e.g. `/healthz`) and **readiness** (e.g. `/ready`) endpoints; use them in Kubernetes `livenessProbe` and `readinessProbe` respectively.
 - **Liveness**: Indicates the process is running. Keep it cheap and dependency-free; if it fails, the runtime may restart the pod.
 - **Readiness**: Indicates the app can accept traffic. Here you MAY check critical dependencies (DB, Redis, etc.). If a dependency is down, return non-2xx so the pod is removed from service until it is ready again.
 - Document the exact semantics and status codes of `/healthz` and `/ready` (e.g. in `docs/design` or API spec).
 
 ## Configuration
+
 - Config from environment or config files; avoid global mutable state.
 - Secrets are never committed; load from secret managers or env.
 
 ## Testing Strategy
+
 - Integration tests for `infra` and DB access.
 - Contract tests for public APIs.
 
 ## Security
+
 - Validate and sanitize all external inputs.
 - AuthN/AuthZ handled at the boundary (middleware/handler).
 - Avoid logging sensitive data.
 
 ## Service Boundaries
+
 - Each service owns its data and domain boundary.
 - Avoid shared databases across services when possible.
 
@@ -140,12 +170,14 @@ The list below is a **general reference** across stacks. For **Go projects**, fo
 - **Rust** - Actix-web, Rocket, Diesel
 
 ### Databases
+
 - **Relational** - PostgreSQL, MySQL
 - **NoSQL** - MongoDB, Redis
 - **Search** - Elasticsearch
 - **Message Queue** - RabbitMQ, Kafka
 
 ### DevOps & Tools
+
 - **Containerization** - Docker, Kubernetes
 - **CI/CD** - GitHub Actions, Jenkins
 - **Monitoring** - Prometheus, Grafana
@@ -256,7 +288,8 @@ spec:
 
 ## Summary
 
-### Always Do:
+### Always Do
+
 1. Keep handlers thin, logic thick
 2. Use structured logging with context
 3. Handle all errors explicitly
@@ -272,7 +305,8 @@ spec:
 13. For every business logic change, MUST check `docs/design` and update or add
     design documentation as needed
 
-### Never Do:
+### Never Do
+
 1. Put business logic in handlers
 2. Log sensitive information
 3. Ignore errors
@@ -284,6 +318,6 @@ spec:
 9. Create unbounded goroutines
 10. Trust user input without validation
 
-
 ## References
-- Frameworks: https://gitee.com/czsuccess/rules-2.1-optimized-zh/blob/master/%E9%A1%B9%E7%9B%AE%E8%A7%84%E5%88%99/backend-dev.mdc
+
+- Frameworks: <https://gitee.com/czsuccess/rules-2.1-optimized-zh/blob/master/%E9%A1%B9%E7%9B%AE%E8%A7%84%E5%88%99/backend-dev.mdc>

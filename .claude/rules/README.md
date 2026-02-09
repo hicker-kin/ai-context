@@ -4,10 +4,12 @@ This directory contains Claude Code rule files (`.md`) that Claude loads to appl
 coding conventions.
 
 ## Files
+
 - `go-code-style.md` - Go code style summary, applies to `**/*.go`
 - `go-project-architecture.md` - Go architecture rules, always apply
 
 ## Full Rule Sources
+
 The `.md` files reference detailed rules from either of these locations
 under the project root:
 
@@ -15,6 +17,7 @@ under the project root:
 - `ai_go/v1/rules/`
 
 ## Installation
+
 From the project root, run:
 
 ```bash
@@ -29,6 +32,7 @@ This downloads `.md` files into `.claude/rules` and full rules into
 ## Difference from Cursor
 
 Claude Code uses:
+
 - `.claude/rules/*.md` instead of `.cursor/rules/*.mdc`
 - `paths: ["**/*.go"]` instead of `globs: **/*.go`
 - No `alwaysApply` field (omit `paths` for global rules)

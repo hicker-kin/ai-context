@@ -5,6 +5,7 @@ This repository provides coding rule files for AI-powered IDEs and a helper inst
 ## Supported AI Tools
 
 ### 🔷 Cursor IDE
+
 Run the installer from the project root:
 
 ```bash
@@ -14,11 +15,13 @@ sh cursor_rules.sh go
 ```
 
 What it does:
+
 - Creates `.cursor/rules` and `.ai-context/rules`
 - Downloads `.mdc` files into `.cursor/rules`
 - Downloads full rule documents into `.ai-context/rules`
 
 ### 🤖 Claude Code
+
 Run the installer from the project root:
 
 ```bash
@@ -28,12 +31,14 @@ sh claude_rules.sh go
 ```
 
 What it does:
+
 - Creates `.claude/rules` and `.ai-context/rules`
 - Downloads `.md` files into `.claude/rules`
 - Downloads full rule documents into `.ai-context/rules`
 - Creates `.claude/CLAUDE.md` with project-level instructions
 
 ## Supported Languages
+
 - `go` (configured)
 - `java` (not configured yet)
 - `react` (not configured yet)
@@ -49,5 +54,6 @@ What it does:
 | File references | `@path/to/file` | `@path/to/file` |
 
 ## Requirements
+
 - `curl`
 - network access to GitHub raw files

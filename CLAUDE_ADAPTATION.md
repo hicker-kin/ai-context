@@ -7,12 +7,14 @@ This document summarizes the adaptation work to support Claude Code alongside Cu
 ### 1. Created Claude-Compatible Rules
 
 **New Files:**
+
 - `.claude/rules/go-code-style.md` - Go code style rules for Claude
 - `.claude/rules/go-project-architecture.md` - Go architecture rules for Claude
 - `.claude/rules/README.md` - Documentation for Claude rules
 - `.claude/CLAUDE.md` - Main project configuration for Claude
 
 **Key Changes from Cursor Format:**
+
 ```diff
 # Cursor format (.mdc)
 ---
@@ -34,12 +36,14 @@ description: Go project architecture rules
 ### 2. Created Installation Scripts
 
 **`claude_rules.sh`** - New installer for Claude Code
+
 - Downloads `.md` files to `.claude/rules/`
 - Downloads detailed docs to `.ai-context/rules/`
 - Creates `.claude/CLAUDE.md` if it doesn't exist
 - Provides post-installation guidance
 
 **`convert_to_claude.sh`** - Conversion utility
+
 - Automatically converts `.cursor/rules/*.mdc` to `.claude/rules/*.md`
 - Converts `globs:` to `paths:` array format
 - Removes `alwaysApply` field
@@ -48,11 +52,13 @@ description: Go project architecture rules
 ### 3. Updated Documentation
 
 **`README.md`** - Updated main README
+
 - Added section for both Cursor IDE and Claude Code
 - Added comparison table of format differences
 - Provides usage instructions for both tools
 
 **`MIGRATION.md`** - New migration guide
+
 - Detailed explanation of format differences
 - Step-by-step conversion instructions
 - Examples of both manual and automated conversion
@@ -60,6 +66,7 @@ description: Go project architecture rules
 - Best practices for supporting both tools
 
 **`CLAUDE_ADAPTATION.md`** - This file
+
 - Summary of all changes
 - Quick reference for developers
 
@@ -156,6 +163,7 @@ sh claude_rules.sh go
 ## Testing
 
 Both formats have been tested with:
+
 - ✅ Code style rules with file patterns
 - ✅ Architecture rules (global application)
 - ✅ File references using `@` syntax
@@ -194,6 +202,7 @@ When adding support for new languages (Java, React, etc.):
 ## Questions?
 
 For issues or suggestions:
+
 - Check [MIGRATION.md](./MIGRATION.md) for troubleshooting
 - Review format examples in `.cursor/rules/` and `.claude/rules/`
 - Test with the conversion script: `./convert_to_claude.sh`
