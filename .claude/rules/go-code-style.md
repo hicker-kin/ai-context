@@ -8,8 +8,9 @@ paths:
 
 Follow the full rules in:
 
-- `@.ai-context/rules/code_style.md`
 - `@ai_go/v1/rules/code_style.md`
+
+When writing or generating Go code, **MUST** follow the **Formatting** and **Naming** sections in code_style.md (gofmt/goimports, import grouping, package/file/identifier naming, abbreviations, receiver names). These are mandatory.
 
 ## Key MUSTs
 

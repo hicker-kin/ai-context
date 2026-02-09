@@ -46,15 +46,14 @@ After scaffolding, align the generated layout with the **Suggested Directory Lay
 │   └── svr.go
 ├── configs/            # configuration files
 │   └── settings.yaml   # default config (app port, DB connection, etc.)
-│
 ├── deployments/        # deployment assets (Kubernetes YAML, Docker Compose)
 │   ├── dev/
 │   │   └── ...
 │   └── prod/
 │       └── ...
 ├── docs/               # project docs
-│   ├── changelog/      # changelog (e.g. CHANGELOG.md per release/iteration)
-│   ├── design/         # design docs (diagrams, conventions, API notes)
+│   ├── changelog/      # changelog (e.g. CHANGELOG.md); SDD (Specification-Driven Development) and similar docs (e.g. ai_sdd) MUST go here
+│   ├── design/         # design docs (PRD, diagrams, conventions, API notes); PRD and similar design docs MUST go here
 │   └── swagger/        # OpenAPI/Swagger specs (e.g. swagger.yaml)
 ├── internal/           # private application code (not importable)
 │   ├── domain/         # domain models / entities (or models/)
@@ -101,6 +100,8 @@ After scaffolding, align the generated layout with the **Suggested Directory Lay
 - `internal/infra` – cache, MQ, external clients. May be used by `service` only when infra does not depend on any other internal package (see layering rules).
 - `internal/router` – routing definitions.
 - `internal/service` – core business logic; `service/dto` for request/response DTOs.
+- **docs/changelog** – Changelog and release notes; **SDD (Specification-Driven Development) and similar documents** (e.g. ai_sdd) **MUST** be placed under `docs/changelog`.
+- **docs/design** – **PRD (Product Requirements Document) and other design documents** (diagrams, conventions, API notes) **MUST** be placed under `docs/design`. All such project docs live under `docs/`.
 - `configs`, `migrations`, `scripts`, `deployments`
 
 ## Layering and Dependency Rules
