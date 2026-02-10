@@ -19,6 +19,16 @@ rules. Base code style is defined in `code_style.md`.
 - Composition over inheritance; small, purpose-specific interfaces.
 - Domain models are independent of transport and persistence concerns.
 
+## Preferred Tech Stack
+
+When no strong reason to choose otherwise, prefer the following:
+
+- **ORM**: Prefer [ent](https://entgo.io/) for generated data access; place under `internal/storage` (e.g. `internal/storage/databases/ent`). Use `internal/dao` only when maintaining data access manually.
+- **Web framework (HTTP)**: Prefer [gin](https://github.com/gin-gonic/gin) for HTTP server and routing; integrate in `internal/server/http` and `internal/router`.
+- **Logging**: Prefer [zap](https://github.com/uber-go/zap) for structured logging; use from `pkg/log` or inject into handlers/services as appropriate. Logging MUST support configurable **file output (落盘)** and **log rotation (切割)** (e.g. by size, time, or both); expose these options in config (e.g. `configs/settings.yaml` or env) and document in `docs/design` if needed.
+
+Deviations are acceptable when justified by project constraints or design docs.
+
 ## Project Initialization (Cobra)
 
 When the user needs to **initialize a new Go (CLI) project**, use Cobra-CLI to scaffold and follow this section.
