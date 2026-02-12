@@ -634,166 +634,10 @@ func Copy(c *Counter) *Counter { // avoid copying mutex
 - Use `defer` for cleanup (e.g. `defer f.Close()`, `defer mu.Unlock()`), so it runs
   on all return paths and keeps code next to the acquire.
 
-## Testing (Style)
-
-- Prefer table-driven tests.
-- Example:
-
-```go
-// BAD
-func TestDouble_Zero(t *testing.T) { /* ... */ }
-func TestDouble_Pos(t *testing.T) { /* ... */ }
-
-// GOOD
-func TestDouble(t *testing.T) {
-    tests := []struct {
-        name string
-        in   int
-        want int
-    }{
-        {name: "zero", in: 0, want: 0},
-        {name: "pos", in: 2, want: 4},
-    }
-    for _, tc := range tests {
-        t.Run(tc.name, func(t *testing.T) {
-            if got := Double(tc.in); got != tc.want {
-                t.Fatalf("Double(%d) = %d, want %d", tc.in, got, tc.want)
-            }
-        })
-    }
-}
-```
-
-- Use subtests with clear case names.
-- Example:
-
-```go
-// BAD
-t.Run("case1", func(t *testing.T) { /* ... */ })
-
-// GOOD
-t.Run("missing_email", func(t *testing.T) { /* ... */ })
-```
-
-- Use `t.Helper()` in helpers.
-- Example:
-
-```go
-// BAD
-func mustOpen(t *testing.T, path string) *os.File {
-    f, err := os.Open(path)
-    if err != nil {
-        t.Fatalf("open: %v", err)
-    }
-    return f
-}
-
-// GOOD
-func mustOpen(t *testing.T, path string) *os.File {
-    t.Helper()
-    f, err := os.Open(path)
-    if err != nil {
-        t.Fatalf("open: %v", err)
-    }
-    return f
-}
-```
-
-- Tests MUST be deterministic.
-- Example:
-
-```go
-// BAD
-seed := time.Now().UnixNano()
-rnd := rand.New(rand.NewSource(seed))
-
-// GOOD
-rnd := rand.New(rand.NewSource(1))
-```
-
-## ✅ Mock Dependencies
-
-```go
-import "go.uber.org/mock/gomock"
-
-func TestWithMock(t *testing.T) {
-    ctrl := gomock.NewController(t)
-    defer ctrl.Finish()
-
-    // Create mock
-    mockModel := mock.NewMockUsersModel(ctrl)
-
-    // Set expectations
-    mockModel.EXPECT().
-        FindOne(gomock.Any(), int64(1)).
-        Return(&model.Users{
-            ID:    1,
-            Name:  "John",
-            Email: "john@example.com",
-        }, nil)
-
-    // Use mock in test
-    svcCtx := &svc.ServiceContext{
-        UsersModel: mockModel,
-    }
-
-    logic := NewGetUserLogic(context.Background(), svcCtx)
-    resp, err := logic.GetUser(&types.GetUserRequest{Id: 1})
-
-    assert.NoError(t, err)
-    assert.Equal(t, "John", resp.Name)
-}
-```
-
 ## Logging (Style Only)
 
 - Log errors at boundaries; avoid logging the same error at multiple layers.
-- Example:
-
-```go
-// BAD
-if err := s.repo.Save(ctx, u); err != nil {
-    logger.Error("save user failed", "err", err)
-    return err
-}
-
-// GOOD
-if err := s.repo.Save(ctx, u); err != nil {
-    return err
-}
-```
-
 - Prefer structured logging with key-value fields when available.
-- Example:
-
-```go
-// BAD
-logger.Infof("user_id=%s status=%s", userID, status)
-
-// GOOD
-logger.Info("request finished", "user_id", userID, "status", status)
-```
-
-## ❌ Logging Anti-Patterns
-
-```go
-// DON'T: Log sensitive information
-l.Logger.Infof("user password: %s", password)  // ❌
-l.Logger.Infof("credit card: %s", ccNumber)    // ❌
-l.Logger.Infof("auth token: %s", token)        // ❌
-
-// DON'T: Log in loops without throttling
-for _, item := range items {
-    l.Logger.Infof("processing %v", item)  // ❌ Too verbose
-}
-
-// DON'T: Use print statements
-fmt.Println("debug info")  // ❌ Use l.Logger instead
-log.Println("error")       // ❌ Use l.Logger instead
-
-// DO: Log summary
-l.Logger.Infof("processing %d items", len(items))  // ✅
-```
 
 ## Summary
 
@@ -807,23 +651,20 @@ l.Logger.Infof("processing %d items", len(items))  // ✅
 6. Enable caching for read-heavy data
 7. Write unit tests
 8. Use transactions for atomic operations
-9. Implement proper security measures
-10. Monitor production metrics
-11. If unsure about a best practice or implementation detail, say so instead of guessing
-12. Follow RESTful API design principles and best practices
+9. Monitor production metrics
+10. If unsure about a best practice or implementation detail, say so instead of guessing
+11. Follow RESTful API design principles and best practices
 
 ### Never Do
 
 1. Put business logic in handlers
-2. Log sensitive information
-3. Ignore errors
-4. Create connections in handlers
-5. Query in loops
-6. Disable resilience features in production
-7. Use global variables
-8. Block without timeouts
-9. Create unbounded goroutines
-10. Trust user input without validation
+2. Ignore errors
+3. Create connections in handlers
+4. Query in loops
+5. Disable resilience features in production
+6. Use global variables
+7. Block without timeouts
+8. Create unbounded goroutines
 
 ## References
 

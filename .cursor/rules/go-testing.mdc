@@ -1,0 +1,12 @@
+---
+description: Go testing rules (table-driven, deterministic, cleanup)
+globs: **/*.go
+alwaysApply: false
+---
+
+# Go Testing Rules
+
+Follow the full rules in:
+
+- `@ai_go/v1/rules/testing.md`
+- `@.ai-context/rules/testing.md`

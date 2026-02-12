@@ -5,8 +5,13 @@ coding conventions.
 
 ## Files
 
-- `go-code-style.mdc` - Go code style summary, applies to `**/*.go`
 - `go-project-architecture.mdc` - Go architecture rules, always apply
+- `go-code-style.mdc` - Go code style summary, applies to `**/*.go`
+- `go-testing.mdc` - Testing rules (table-driven, deterministic, cleanup)
+- `go-performance.mdc` - Performance rules (profile-first, bounded concurrency)
+- `go-security.mdc` - Security rules (validation, authz, safe logging)
+- `go-docs.mdc` - Documentation rules (godoc, examples, design/changelog sync)
+- `go-code-quality.mdc` - Code quality practices (composition, explicit errors)
 
 ## Full Rule Sources
 

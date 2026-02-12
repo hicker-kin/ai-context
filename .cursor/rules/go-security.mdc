@@ -1,0 +1,12 @@
+---
+description: Go security rules (input validation, authz, safe logging)
+globs: **/*.go
+alwaysApply: true
+---
+
+# Go Security Rules
+
+Follow the full rules in:
+
+- `@ai_go/v1/rules/security.md`
+- `@.ai-context/rules/security.md`

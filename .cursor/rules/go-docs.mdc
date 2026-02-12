@@ -1,0 +1,12 @@
+---
+description: Go documentation rules (godoc, examples, sync with design docs)
+globs: "**/*.go,docs/**/*"
+alwaysApply: false
+---
+
+# Go Documentation Rules
+
+Follow the full rules in:
+
+- `@ai_go/v1/rules/documentation.md`
+- `@.ai-context/rules/documentation.md`

@@ -1,0 +1,12 @@
+---
+description: Go performance rules (profile-first, bounded concurrency)
+globs: **/*.go
+alwaysApply: false
+---
+
+# Go Performance & Optimization
+
+Follow the full rules in:
+
+- `@ai_go/v1/rules/performance.md`
+- `@.ai-context/rules/performance.md`

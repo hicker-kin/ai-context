@@ -1,0 +1,12 @@
+---
+description: Go code quality rules (composition, explicit errors, cleanup)
+globs: **/*.go
+alwaysApply: false
+---
+
+# Go Code Quality Rules
+
+Follow the full rules in:
+
+- `@ai_go/v1/rules/code_quality.md`
+- `@.ai-context/rules/code_quality.md`
