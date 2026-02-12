@@ -1,0 +1,53 @@
+---
+description: Superpowers development workflow (brainstorm → spec → plan → TDD → review)
+alwaysApply: true
+---
+
+# Superpowers Development Workflow
+
+Follow the development workflow defined in `@.superpowers`. **Scope and conditions apply.**
+
+## When to Use Full Workflow (brainstorming → spec → plan → TDD → review)
+
+Apply when:
+
+- Creating **new features** or **new components**
+- Adding **new functionality** or **significant behavior changes**
+- The user says "build X", "add feature Y", "implement Z"
+
+## When to Use Debugging Workflow (no brainstorming)
+
+Apply when:
+
+- **Bug fixes**, **test failures**, or **unexpected behavior**
+- Use `@.superpowers/skills/systematic-debugging/` first: find root cause, then fix
+- Still use TDD for the fix and code review before completion
+
+## When to Use Minimal Workflow
+
+Apply when:
+
+- **Refactors** (rename, extract, move): brief plan + confirmation, then TDD
+- **Formatting / typos / docs-only**: no spec needed; confirm scope and proceed
+
+## You MUST (by scope)
+
+| Scope      | Brainstorming | Spec/Plan | Confirmation | TDD | Code Review |
+|------------|---------------|-----------|--------------|-----|-------------|
+| New feature| ✓             | ✓         | ✓            | ✓   | ✓           |
+| Bug fix    | ✗ (use systematic-debugging) | brief root-cause notes | ✓ | ✓ | ✓ |
+| Refactor   | ✗             | brief     | ✓            | ✓   | ✓           |
+| Trivial    | ✗             | ✗         | ✓            | ✗   | optional    |
+
+## Never Do
+
+- Directly implement features without a plan or confirmation
+- Skip root-cause investigation for bugs (use systematic-debugging first)
+
+## Reference
+
+- `skills/brainstorming/` – clarify intent, requirements, design before implementation
+- `skills/systematic-debugging/` – root cause before fixes (bug path)
+- `skills/writing-plans/` – break work into tasks with file paths and verification steps
+- `skills/test-driven-development/` – RED-GREEN-REFACTOR cycle
+- `skills/requesting-code-review/` – review against plan before merging

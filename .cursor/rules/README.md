@@ -12,6 +12,7 @@ coding conventions.
 - `go-security.mdc` - Security rules (validation, authz, safe logging)
 - `go-docs.mdc` - Documentation rules (godoc, examples, design/changelog sync)
 - `go-code-quality.mdc` - Code quality practices (composition, explicit errors)
+- `superpowers.mdc` - Superpowers development workflow (brainstorm → spec → TDD → review)
 
 ## Full Rule Sources
 
