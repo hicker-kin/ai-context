@@ -127,34 +127,39 @@ func (s *UserService) Create(ctx context.Context) error {
 }
 ```
 
-- Avoid repeating the package name in type names.
+- Do not repeat the package name in any identifier (types, structs, variables,
+  functions, methods). The prefix of an identifier must not match the package name,
+  regardless of case (e.g. `federation`, `Federation`, `FEDERATION`).
 - Example:
 
 ```go
 // BAD
-package yamlconfig
+package federation
 
-type YAMLConfig struct{}
+type FederationService struct {
+    connectorRepo IdPConnectorRepository
+    oidcExchange  OIDCExchange
+    userRepo      user.UserRepository
+    authSvc       *auth.AuthService
+}
 
-// GOOD
-package yamlconfig
+var federationConfigDefault = Config{}
 
-type Config struct{}
-```
-
-- Avoid repeating the package name in variable names.
-- Example:
-
-```go
-// BAD
-package yamlconfig
-
-var yamlConfigDefault = Config{}
+func ParseFederationConfig(input string) (*Config, error) { return nil, nil }
 
 // GOOD
-package yamlconfig
+package federation
+
+type Service struct {
+    connectorRepo IdPConnectorRepository
+    oidcExchange  OIDCExchange
+    userRepo      user.UserRepository
+    authSvc       *auth.AuthService
+}
 
 var defaultConfig = Config{}
+
+func Parse(input string) (*Config, error) { return nil, nil }
 ```
 
 - In a function, do not reuse variable names for different meanings.
@@ -274,20 +279,7 @@ func (u *User) UserValidateEmail() error { return nil }
 func (u *User) ValidateEmail() error { return nil }
 ```
 
-- Avoid repeating the package name in function names.
-- Example:
-
-```go
-// BAD
-package yamlconfig
-
-func ParseYAMLConfig(input string) (*Config, error) { return nil, nil }
-
-// GOOD
-package yamlconfig
-
-func Parse(input string) (*Config, error) { return nil, nil }
-```
+- Do not repeat the package name in function names (see Naming above).
 
 - Avoid "Get" prefix for simple accessors; use noun-like names.
 - Example:
