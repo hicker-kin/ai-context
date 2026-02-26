@@ -20,10 +20,10 @@ case "$LANGUAGE" in
       -o .claude/rules/go-project-architecture.md
 
     # 2) Full rules (detailed documentation)
-    curl -fsSL "$BASE_URL/ai_go/v1/rules/code_style.md" \
-      -o .ai-context/rules/code_style.md
-    curl -fsSL "$BASE_URL/ai_go/v1/rules/project_architecture.md" \
-      -o .ai-context/rules/project_architecture.md
+    for f in code_style project_architecture code_quality performance testing security documentation; do
+      curl -fsSL "$BASE_URL/ai_go/v1/rules/${f}.md" -o .ai-context/rules/${f}.md
+      curl -fsSL "$BASE_URL/ai_go/v1/rules/${f}_zh.md" -o .ai-context/rules/${f}_zh.md
+    done
 
     # 3) Create CLAUDE.md if it doesn't exist
     if [[ ! -f "CLAUDE.md" && ! -f ".claude/CLAUDE.md" ]]; then
@@ -39,6 +39,8 @@ See detailed rules:
 For complete documentation:
 - @.ai-context/rules/code_style.md
 - @.ai-context/rules/project_architecture.md
+- @.ai-context/rules/code_style_zh.md (中文版)
+- @.ai-context/rules/project_architecture_zh.md (中文版)
 EOF
       echo "Created .claude/CLAUDE.md"
     fi

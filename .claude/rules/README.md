@@ -16,6 +16,8 @@ under the project root:
 - `.ai-context/rules/`
 - `ai_go/v1/rules/`
 
+Chinese versions (`*_zh.md`) are available under `ai_go/v1/rules/` or `.ai-context/rules/` (e.g. `code_style_zh.md`). In third-party projects, use `.ai-context/rules/`.
+
 ## Installation
 
 From the project root, run:

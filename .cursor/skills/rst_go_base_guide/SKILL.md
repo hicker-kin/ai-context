@@ -22,6 +22,9 @@ This skill may run in a **global** context (e.g. from `~/.cursor/skills`), where
 
 1. **Current project root** (workspace or repo where the user is working):
    - `ai_go/v1/rules/project_architecture.md`, `ai_go/v1/rules/code_style.md`
+   - `.ai-context/rules/project_architecture.md`, `.ai-context/rules/code_style.md` (三方项目)
+   - `ai_go/v1/rules/project_architecture_zh.md`, `ai_go/v1/rules/code_style_zh.md` (中文版)
+   - `.ai-context/rules/project_architecture_zh.md`, `.ai-context/rules/code_style_zh.md` (中文版，三方项目)
    - `.cursor/rules/go-project-architecture.mdc`, `.cursor/rules/go-code-style.mdc`
 2. If not found under the project root: **user directory**
    - `~/.cursor/skills/` or `~/.claude/rules/` (or equivalent rule locations under the user’s home).
@@ -36,8 +39,10 @@ When guiding implementation or review, **read the relevant full rule file(s)** (
 
 | Source | Path (relative to project root or user dir) |
 |--------|---------------------------------------------|
-| Full architecture | `ai_go/v1/rules/project_architecture.md` |
-| Full code style | `ai_go/v1/rules/code_style.md` |
+| Full architecture | `ai_go/v1/rules/project_architecture.md`, `.ai-context/rules/project_architecture.md` |
+| Full architecture (中文) | `ai_go/v1/rules/project_architecture_zh.md`, `.ai-context/rules/project_architecture_zh.md` |
+| Full code style | `ai_go/v1/rules/code_style.md`, `.ai-context/rules/code_style.md` |
+| Full code style (中文) | `ai_go/v1/rules/code_style_zh.md`, `.ai-context/rules/code_style_zh.md` |
 | Cursor architecture summary | `.cursor/rules/go-project-architecture.mdc` |
 | Cursor code style summary | `.cursor/rules/go-code-style.mdc` |
 

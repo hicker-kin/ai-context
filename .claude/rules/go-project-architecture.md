@@ -7,6 +7,9 @@ description: Go project architecture rules (Clean Architecture)
 Follow the full rules in:
 
 - `@ai_go/v1/rules/project_architecture.md`
+- `@.ai-context/rules/project_architecture.md`
+- `@.ai-context/rules/project_architecture_zh.md` (中文版)
+- `@ai_go/v1/rules/project_architecture_zh.md` (中文版)
 
 ## When initializing a new project
 

@@ -14,6 +14,13 @@ For complete documentation:
 - @.ai-context/rules/code_style.md
 - @.ai-context/rules/project_architecture.md
 
+Chinese versions (中文版):
+
+- @.ai-context/rules/code_style_zh.md
+- @.ai-context/rules/project_architecture_zh.md
+- @ai_go/v1/rules/code_style_zh.md
+- @ai_go/v1/rules/project_architecture_zh.md
+
 ## How to Use
 
 When creating a new project:

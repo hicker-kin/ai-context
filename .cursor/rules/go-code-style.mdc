@@ -10,6 +10,8 @@ Follow the full rules in:
 
 - `@.ai-context/rules/code_style.md`
 - `@ai_go/v1/rules/code_style.md`
+- `@.ai-context/rules/code_style_zh.md` (中文版)
+- `@ai_go/v1/rules/code_style_zh.md` (中文版)
 
 ## Key MUSTs
 

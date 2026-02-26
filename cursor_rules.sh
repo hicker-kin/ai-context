@@ -20,10 +20,10 @@ case "$LANGUAGE" in
       -o .cursor/rules/go-project-architecture.mdc
 
     # 2) full rules
-    curl -fsSL "$BASE_URL/ai_go/v1/rules/code_style.md" \
-      -o .ai-context/rules/code_style.md
-    curl -fsSL "$BASE_URL/ai_go/v1/rules/project_architecture.md" \
-      -o .ai-context/rules/project_architecture.md
+    for f in code_style project_architecture code_quality performance testing security documentation; do
+      curl -fsSL "$BASE_URL/ai_go/v1/rules/${f}.md" -o .ai-context/rules/${f}.md
+      curl -fsSL "$BASE_URL/ai_go/v1/rules/${f}_zh.md" -o .ai-context/rules/${f}_zh.md
+    done
     ;;
   java)
     # TODO: add java rules
