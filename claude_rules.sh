@@ -30,9 +30,8 @@ case "$LANGUAGE" in
       curl -fsSL "$BASE_URL/ai_go/v1/rules/${f}_zh.md" -o .ai-context/rules/${f}_zh.md
     done
 
-    # 3) Create CLAUDE.md if it doesn't exist
-    if [[ ! -f "CLAUDE.md" && ! -f ".claude/CLAUDE.md" ]]; then
-      cat > .claude/CLAUDE.md <<'EOF'
+    # 3) CLAUDE.md (force overwrite)
+    cat > .claude/CLAUDE.md <<'EOF'
 # Project Rules
 
 This project follows Go coding standards and clean architecture principles.
@@ -50,8 +49,7 @@ For complete documentation:
 - @.ai-context/rules/code_style_zh.md (中文版)
 - @.ai-context/rules/project_architecture_zh.md (中文版)
 EOF
-      echo "Created .claude/CLAUDE.md"
-    fi
+    echo "Updated .claude/CLAUDE.md"
     ;;
   java)
     # TODO: add java rules
