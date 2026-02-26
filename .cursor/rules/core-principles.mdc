@@ -1,0 +1,22 @@
+---
+description: Core principles for all development (no speculation, confirm first, YAGNI, doc changes, no delete, no modify without consent)
+alwaysApply: true
+---
+
+# Core Principles
+
+AI **MUST** follow these in every interaction. See full rules:
+
+- `@ai_go/v1/rules/core_principles.md`
+- `@.ai-context/rules/core_principles.md`
+- `@ai_go/v1/rules/core_principles_zh.md` (中文版)
+- `@.ai-context/rules/core_principles_zh.md` (中文版)
+
+## MUSTs
+
+1. **No speculation** (禁止揣测): When encountering ambiguity or unclear requirements, **do NOT** guess. **MUST** ask the user for clarification.
+2. **Confirm first** (确认优先): When unsure of user intent, **confirm before executing**.
+3. **YAGNI**: Only implement explicitly requested functionality. **Do NOT** add unrequested extensions.
+4. **Document all changes** (变动必记): All changes (new features or bugs) **MUST** be documented under project root `docs/`.
+5. **No deletion of historical code** (历史代码禁止删除): **Do NOT** delete historical code; only comment it out.
+6. **No modification without consent** (征得同意再改): **Do NOT** modify existing code's types, params, or business logic unless necessary and user approves.

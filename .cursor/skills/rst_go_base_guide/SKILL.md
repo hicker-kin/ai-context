@@ -21,6 +21,8 @@ Apply this skill when:
 This skill may run in a **global** context (e.g. from `~/.cursor/skills`), where paths like `.cursor/rules/*.mdc` are relative and may not point to the current project. Resolve rule files in this order:
 
 1. **Current project root** (workspace or repo where the user is working):
+   - `ai_go/v1/rules/core_principles.md` (MUST follow in every interaction)
+   - `.ai-context/rules/core_principles.md`, `.ai-context/rules/core_principles_zh.md`
    - `ai_go/v1/rules/project_architecture.md`, `ai_go/v1/rules/code_style.md`
    - `.ai-context/rules/project_architecture.md`, `.ai-context/rules/code_style.md` (三方项目)
    - `ai_go/v1/rules/project_architecture_zh.md`, `ai_go/v1/rules/code_style_zh.md` (中文版)

@@ -5,6 +5,7 @@ coding conventions.
 
 ## Files
 
+- `core-principles.mdc` - Core principles (no speculation, confirm first, YAGNI), always apply
 - `go-project-architecture.mdc` - Go architecture rules, always apply
 - `go-code-style.mdc` - Go code style summary, applies to `**/*.go`
 - `go-testing.mdc` - Testing rules (table-driven, deterministic, cleanup)

@@ -6,6 +6,7 @@ This project provides coding standards and best practices for multiple languages
 
 See detailed rules:
 
+- @.claude/rules/core-principles.md (MUST follow in every interaction)
 - @.claude/rules/go-code-style.md
 - @.claude/rules/go-project-architecture.md
 
@@ -16,6 +17,7 @@ For complete documentation:
 
 Chinese versions (中文版):
 
+- @.ai-context/rules/core_principles_zh.md
 - @.ai-context/rules/code_style_zh.md
 - @.ai-context/rules/project_architecture_zh.md
 - @ai_go/v1/rules/code_style_zh.md

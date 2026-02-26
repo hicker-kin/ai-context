@@ -5,6 +5,7 @@ coding conventions.
 
 ## Files
 
+- `core-principles.md` - Core principles (no speculation, confirm first, YAGNI), always apply
 - `go-code-style.md` - Go code style summary, applies to `**/*.go`
 - `go-project-architecture.md` - Go architecture rules, always apply
 

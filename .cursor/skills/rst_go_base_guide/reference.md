@@ -4,6 +4,10 @@ One-line summaries of each rule source used by rst_go_base_guide. Paths are rela
 
 | File | Summary |
 |------|---------|
+| `ai_go/v1/rules/core_principles.md` | No speculation, confirm first, YAGNI. Must follow in every interaction. |
+| `.ai-context/rules/core_principles.md` | 同上（三方项目） |
+| `ai_go/v1/rules/core_principles_zh.md` | 同上（中文版） |
+| `.ai-context/rules/core_principles_zh.md` | 同上（中文版，三方项目） |
 | `ai_go/v1/rules/project_architecture.md` | Project structure, directory layout, layering and dependency rules, API design, observability, health checks, config, testing, security, Go version/module, project init (Cobra), technology stack, deployment. |
 | `ai_go/v1/rules/project_architecture_zh.md` | 同上（中文版） |
 | `.ai-context/rules/project_architecture_zh.md` | 同上（中文版，三方项目） |
