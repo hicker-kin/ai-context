@@ -33,9 +33,9 @@ import (
 
     "github.com/acme/foo" // 第三方
 
-    "mycorp/sdk/foo"  // 二方
+    "mycorp/sdk/foo"  // 同集团（公司）其他项目调用
 
-    "mycorp/app/internal/bar" // 本地
+    "mycorp/app/internal/bar" // 本项目
 )
 ```
 
