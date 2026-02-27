@@ -6,7 +6,7 @@ This repository provides coding rule files for AI-powered IDEs and a helper inst
 
 ### 🔷 Cursor IDE
 
-Run the installer from the project root:
+**Rules** – Run from the project root:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/hicker-kin/ai-context/main/cursor_rules.sh -o cursor_rules.sh
@@ -14,11 +14,20 @@ chmod +x cursor_rules.sh
 sh cursor_rules.sh go
 ```
 
-What it does:
-
 - Creates `.cursor/rules` and `.ai-context/rules`
 - Downloads `.mdc` files into `.cursor/rules`
 - Downloads full rule documents into `.ai-context/rules`
+
+**Skills** – Run from the project root:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/hicker-kin/ai-context/main/cursor_skills.sh -o cursor_skills.sh
+chmod +x cursor_skills.sh
+sh cursor_skills.sh go
+```
+
+- Creates `.cursor/skills/`
+- Downloads `go-logging` skill (SKILL.md + examples.md) by default
 
 ### 🤖 Claude Code
 
