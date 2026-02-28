@@ -9,19 +9,23 @@ See detailed rules:
 - @.claude/rules/core-principles.md (MUST follow in every interaction)
 - @.claude/rules/go-code-style.md
 - @.claude/rules/go-project-architecture.md
+- @.claude/rules/go-config-style.md
 
 For complete documentation:
 
 - @.ai-context/rules/code_style.md
 - @.ai-context/rules/project_architecture.md
+- @.ai-context/rules/config_style.md
 
 Chinese versions (中文版):
 
 - @.ai-context/rules/core_principles_zh.md
 - @.ai-context/rules/code_style_zh.md
 - @.ai-context/rules/project_architecture_zh.md
+- @.ai-context/rules/config_style_zh.md
 - @ai_go/v1/rules/code_style_zh.md
 - @ai_go/v1/rules/project_architecture_zh.md
+- @ai_go/v1/rules/config_style_zh.md
 
 ## How to Use
 

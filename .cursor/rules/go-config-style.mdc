@@ -1,0 +1,69 @@
+---
+description: Go config struct and YAML file annotation rules
+globs: "**/*.go,**/config*.yaml,**/config*.yml"
+alwaysApply: false
+---
+
+# Config Annotation Rules (MUST follow)
+
+配置结构体和配置文件**必须**保持注释同步。
+
+## Rule 1: 枚举/多选值必须列出所有可选项
+
+字段有多个可选值时，**MUST** 在行尾注释中用 `|` 分隔列出全部选项。
+
+```go
+// Good
+Driver string `mapstructure:"driver"` // "sqlite3" | "postgres"
+Level  string `mapstructure:"level"`  // "debug" | "info" | "warn" | "error" | "fatal"
+Mode   string `mapstructure:"mode"`   // "openldap" | "activedirectory"
+
+// Bad — 缺少可选值
+Driver string `mapstructure:"driver"`
+Level  string `mapstructure:"level"` // log level
+```
+
+## Rule 2: 复杂参数必须加详细说明
+
+含单位、默认值、特殊格式的字段，**MUST** 在注释中说明。
+
+```go
+// Good
+MaxSize    int    `mapstructure:"max_size"`     // max size per file in MB
+MaxAge     int    `mapstructure:"max_age"`      // max days to retain old files
+Path       string `mapstructure:"path"`         // SQLite file path, e.g. "data/app.db"
+SSLMode    string `mapstructure:"sslmode"`      // "disable" | "require" | "verify-ca" | "verify-full"
+
+// Bad — 无单位、无示例
+MaxSize int    `mapstructure:"max_size"`
+Path    string `mapstructure:"path"`
+```
+
+## Rule 3: YAML 配置文件必须加对应注释
+
+Go 结构体中的可选值和说明，**MUST** 同步写到 YAML 配置文件中。
+
+```yaml
+# Good — 段落上方列出可选值，行内注释说明
+# driver: sqlite3 | postgres
+database:
+  driver: sqlite3
+  path: data/app.db
+
+# level: debug | info | warn | error | fatal
+# format: text | json
+log:
+  level: "info"
+  format: "text"
+  rotate:
+    max_size: 100          # 单文件最大 MB
+    max_age: 7             # 保留天数
+
+# Bad — 无注释
+database:
+  driver: sqlite3
+log:
+  level: "info"
+  rotate:
+    max_size: 100
+```
