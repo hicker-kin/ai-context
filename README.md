@@ -1,8 +1,46 @@
 # AI Coding Rules Installer
 
+> **Repository:** https://github.com/hicker-kin/ai-context
+
 This repository provides coding rule files for AI-powered IDEs and helper installer scripts.
 
-## Supported AI Tools
+## Quick Install via Makefile (Recommended)
+
+Download the `Makefile` into your project root, then use `make` targets to install rules and skills.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/hicker-kin/ai-context/main/Makefile -o Makefile
+```
+
+### Common Makefile Targets
+
+| Target | Description |
+|--------|-------------|
+| `make ai-context-install` | Install all rules (Cursor + Claude) **and** skills in one step |
+| `make ai-rules-install` | Install rules for both Cursor and Claude |
+| `make ai-skills-install` | Install Cursor skills only |
+| `make cursor-rules` | Generate Cursor rules (runs `cursor_rules.sh go`) |
+| `make claude-rules` | Generate Claude rules (runs `claude_rules.sh go`) |
+| `make cursor-skills` | Generate Cursor skills (runs `cursor_skills.sh go`) |
+
+**Examples:**
+
+```bash
+# Install everything (rules + skills) at once
+make ai-context-install
+
+# Install rules only
+make ai-rules-install
+
+# Install skills only
+make ai-skills-install
+```
+
+> Scripts are downloaded into a local `scripts/` directory on first run; subsequent runs reuse them.
+
+---
+
+## Manual Install via Shell Scripts
 
 ### 🔷 Cursor IDE
 
@@ -26,7 +64,7 @@ Both scripts:
 
 - Create `.cursor/rules` and `.ai-context/rules`
 - Download `.mdc` summary rules into `.cursor/rules`
-- Download full rule documents (EN + ZH) into `.ai-context/rules`
+- Download full rule documents into `.ai-context/rules`
 
 **Skills** – Run from the project root:
 
@@ -61,10 +99,12 @@ Both scripts:
 
 - Create `.claude/rules` and `.ai-context/rules`
 - Download `.md` summary rules into `.claude/rules`
-- Download full rule documents (EN + ZH) into `.ai-context/rules`
+- Download full rule documents into `.ai-context/rules`
 - Create `.claude/CLAUDE.md` with project-level instructions
 
 The `_zh.sh` variant generates a Chinese-first `CLAUDE.md` that references Chinese rule documents as the primary source.
+
+---
 
 ## Supported Languages
 
@@ -95,4 +135,5 @@ The `_zh.sh` variant generates a Chinese-first `CLAUDE.md` that references Chine
 ## Requirements
 
 - `curl`
+- `make` (for Makefile installation)
 - network access to GitHub raw files
