@@ -10,6 +10,7 @@ AI **MUST** follow these principles in every development interaction.
 - **Document all changes** (变动必记): All changes—whether new features or bug fixes—**MUST** be documented under the project root `docs/` directory.
 - **No deletion of historical code** (历史代码禁止删除): **Do NOT** delete historical code. Only comment it out when replacing.
 - **No modification without consent** (征得同意再改): **Do NOT** modify existing code's types, parameters, or business logic unless necessary. When such changes are required, **MUST** obtain user consent first.
+- **Confirm tech stack before new project** (新项目先确认技术栈): Before starting any new project, **MUST** confirm with the user: the technology stack and versions, environment-specific choices (e.g. SQLite for dev, PostgreSQL for prod), and core architectural decisions (e.g. Redis-based master election for clustered deployments). Do **NOT** begin scaffolding or coding until the user explicitly approves the stack and architecture.
 
 ## Rationale
 
@@ -21,6 +22,7 @@ AI **MUST** follow these principles in every development interaction.
 | Document all changes | Maintains traceability and team alignment. |
 | No deletion of historical code | Preserves audit trail and enables rollback. |
 | No modification without consent | Avoids breaking callers and unexpected side effects. |
+| Confirm tech stack before new project | Prevents wasted scaffolding and avoids costly rework from mismatched environment assumptions. |
 
 ## Examples
 
@@ -39,3 +41,7 @@ AI **MUST** follow these principles in every development interaction.
 **BAD**: Changing a function's signature or return type without asking the user.
 
 **GOOD**: "Changing this would affect callers A, B. Do you approve? I'll document it in docs/."
+
+**BAD**: User says "start a new Go project" → AI immediately runs `cobra-cli init` and writes code without confirming DB, env strategy, or cluster design.
+
+**GOOD**: User says "start a new Go project" → AI asks: "Before I scaffold, please confirm: (1) Go version (default: 1.24); (2) Web framework (default: Gin); (3) ORM (default: ent); (4) Dev DB / Prod DB (e.g. SQLite / PostgreSQL); (5) Any cluster/HA components needed (e.g. Redis for master election)?"

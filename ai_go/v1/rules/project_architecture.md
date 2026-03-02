@@ -7,7 +7,7 @@ rules. Base code style is defined in `code_style.md`.
 
 ## Go Version and Module
 
-- Use a **minimum Go version** (e.g. 1.21+) and set it in `go.mod` (`go 1.21`).
+- **New projects** MUST use a minimum Go version of **1.24+** and set it in `go.mod` (`go 1.24`). **Existing projects** MUST NOT upgrade the Go version unless explicitly requested by the user.
 - **Module path**: Prefer a clear, import-friendly path (e.g. `github.com/org/repo`); avoid `replace`/`exclude` in committed `go.mod` unless necessary.
 - Keep application code under **`internal/`** so it is not importable by other modules; put reusable libraries under **`pkg/`** if they may be used by other projects.
 - Run **`go mod tidy`** before committing; do not commit untracked or unnecessary dependencies.
@@ -236,7 +236,7 @@ Common mainstream middleware by category and typical use cases (for reference wh
 
 ```dockerfile
 # Dockerfile
-FROM golang:1.21-alpine AS builder
+FROM golang:1.24-alpine AS builder
 
 WORKDIR /app
 COPY go.mod go.sum ./

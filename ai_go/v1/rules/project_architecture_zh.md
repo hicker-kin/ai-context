@@ -6,7 +6,7 @@
 
 ## Go 版本与模块
 
-- 使用**最低 Go 版本**（如 1.21+）并在 `go.mod` 中设置（`go 1.21`）。
+- **新项目**必须使用最低 Go 版本 **1.24+**，并在 `go.mod` 中设置（`go 1.24`）。**已有项目**除非用户明确要求，否则**禁止**升级 Go 版本。
 - **模块路径**：优先清晰、便于 import 的路径（如 `github.com/org/repo`）；除非必要，避免在已提交的 `go.mod` 中使用 `replace`/`exclude`。
 - 应用代码置于 **`internal/`**，避免被其他模块 import；可复用库放在 **`pkg/`**，供其他项目使用。
 - 提交前执行 **`go mod tidy`**；不提交未跟踪或不必要的依赖。
@@ -235,7 +235,7 @@ Go 相关框架与常用库参考。
 
 ```dockerfile
 # Dockerfile
-FROM golang:1.21-alpine AS builder
+FROM golang:1.24-alpine AS builder
 
 WORKDIR /app
 COPY go.mod go.sum ./
