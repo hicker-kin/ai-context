@@ -6,12 +6,13 @@ alwaysApply: false
 
 # Go HTTP Response Format (MUST follow)
 
-Follow the full rules in:
+> **Authoritative rule (MUST follow):** `@ai_go/v1/rules/http_response.md`
 
-- `@ai_go/v1/rules/http_response.md`
+Also available:
+
 - `@.ai-context/rules/http_response.md`
-- `@.ai-context/rules/http_response_zh.md` (中文版)
 - `@ai_go/v1/rules/http_response_zh.md` (中文版)
+- `@.ai-context/rules/http_response_zh.md` (中文版)
 
 ## Key MUSTs
 

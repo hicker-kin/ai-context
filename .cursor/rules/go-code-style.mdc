@@ -1,7 +1,7 @@
 ---
 description: Go code style summary (see full rules)
 globs: **/*.go
-alwaysApply: false
+alwaysApply: true
 ---
 
 # Go Code Style (Summary)
