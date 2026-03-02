@@ -10,7 +10,7 @@ fi
 BASE_URL="https://raw.githubusercontent.com/hicker-kin/ai-context/main"
 
 # Go rule files (without .md) to download into .ai-context/rules/
-GO_RULE_FILES="core_principles code_style project_architecture code_quality performance testing security documentation config_style"
+GO_RULE_FILES="core_principles code_style project_architecture code_quality performance testing security documentation config_style http_response"
 
 mkdir -p .cursor/rules .ai-context/rules
 
@@ -25,6 +25,8 @@ case "$LANGUAGE" in
       -o .cursor/rules/go-project-architecture.mdc
     curl -fsSL "$BASE_URL/.cursor/rules/go-config-style.mdc" \
       -o .cursor/rules/go-config-style.mdc
+    curl -fsSL "$BASE_URL/.cursor/rules/go-http-response.mdc" \
+      -o .cursor/rules/go-http-response.mdc
 
     # 2) full rules
     for f in $GO_RULE_FILES; do

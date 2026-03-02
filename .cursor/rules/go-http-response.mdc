@@ -1,0 +1,85 @@
+---
+description: Go HTTP response format rules (standard envelope, BaseResponse, Pagination, json tags)
+globs: "**/*.go"
+alwaysApply: false
+---
+
+# Go HTTP Response Format (MUST follow)
+
+Follow the full rules in:
+
+- `@ai_go/v1/rules/http_response.md`
+- `@.ai-context/rules/http_response.md`
+- `@.ai-context/rules/http_response_zh.md` (中文版)
+- `@ai_go/v1/rules/http_response_zh.md` (中文版)
+
+## Key MUSTs
+
+- **Generic response**: use `HTTPResponse` as the top-level envelope.
+- **Typed response**: embed `BaseResponse`; declare `Result` with `json:"result"`.
+- **Pagination**: use `Pagination` struct; field name **MUST** be `json:"pagination"`.
+- **JSON tags**: every field in a response struct **MUST** have an explicit `json` tag — default (implicit) names are forbidden.
+- **omitempty**: optional envelope fields (`Data`, `Details`, `RequestID`) MUST use `omitempty`; required fields (`Code`, `Msg`) MUST NOT.
+
+## Standard Structures
+
+```go
+const (
+    CodeOK = "0"
+    MsgOK  = "ok"
+)
+
+// Generic envelope
+type HTTPResponse struct {
+    Code      string            `json:"code"`
+    Msg       string            `json:"message"`
+    Data      any               `json:"result,omitempty"`
+    Details   map[string]string `json:"details,omitempty"`
+    RequestID string            `json:"request_id,omitempty"`
+}
+
+// Typed response base
+type BaseResponse struct {
+    Code      string `json:"code"`
+    RequestID string `json:"request_id,omitempty"`
+}
+
+// Pagination
+type Pagination struct {
+    Total    int `json:"total"`
+    PageSize int `json:"page_size"`
+    Current  int `json:"current"`
+}
+```
+
+## Good / Bad
+
+```go
+// GOOD — typed single response
+type FormTemplateResp struct {
+    BaseResponse
+    Result *FormTemplate `json:"result"`
+}
+
+// GOOD — typed paginated response
+type FormTemplatePageData struct {
+    Page Pagination      `json:"pagination"`
+    List []*FormTemplate `json:"list"`
+}
+type FormTemplatePageResp struct {
+    BaseResponse
+    Result *FormTemplatePageData `json:"result"`
+}
+
+// BAD — missing json tags ❌
+type OrderDetail struct {
+    OrderID    string // ❌ serializes as "OrderID"
+    TotalPrice int64  // ❌ serializes as "TotalPrice"
+}
+
+// BAD — non-standard pagination ❌
+type PageData struct {
+    TotalCount int             // ❌ no tag, non-standard name
+    Items      []*FormTemplate `json:"items"` // ❌ should be "list"
+}
+```

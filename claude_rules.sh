@@ -10,7 +10,7 @@ fi
 BASE_URL="https://raw.githubusercontent.com/hicker-kin/ai-context/main"
 
 # Go rule files (without .md) to download into .ai-context/rules/
-GO_RULE_FILES="core_principles code_style project_architecture code_quality performance testing security documentation config_style"
+GO_RULE_FILES="core_principles code_style project_architecture code_quality performance testing security documentation config_style http_response"
 
 mkdir -p .claude/rules .ai-context/rules
 
@@ -25,6 +25,8 @@ case "$LANGUAGE" in
       -o .claude/rules/go-project-architecture.md
     curl -fsSL "$BASE_URL/.claude/rules/go-config-style.md" \
       -o .claude/rules/go-config-style.md
+    curl -fsSL "$BASE_URL/.claude/rules/go-http-response.md" \
+      -o .claude/rules/go-http-response.md
 
     # 2) Full rules (detailed documentation)
     for f in $GO_RULE_FILES; do
@@ -43,16 +45,19 @@ See detailed rules:
 - @.claude/rules/go-code-style.md
 - @.claude/rules/go-project-architecture.md
 - @.claude/rules/go-config-style.md
+- @.claude/rules/go-http-response.md
 
 For complete documentation:
 - @.ai-context/rules/core_principles.md
 - @.ai-context/rules/code_style.md
 - @.ai-context/rules/project_architecture.md
 - @.ai-context/rules/config_style.md
+- @.ai-context/rules/http_response.md
 - @.ai-context/rules/core_principles_zh.md (中文版)
 - @.ai-context/rules/code_style_zh.md (中文版)
 - @.ai-context/rules/project_architecture_zh.md (中文版)
 - @.ai-context/rules/config_style_zh.md (中文版)
+- @.ai-context/rules/http_response_zh.md (中文版)
 EOF
     echo "Updated .claude/CLAUDE.md"
     ;;

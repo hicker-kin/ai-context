@@ -10,12 +10,14 @@ See detailed rules:
 - @.claude/rules/go-code-style.md
 - @.claude/rules/go-project-architecture.md
 - @.claude/rules/go-config-style.md
+- @.claude/rules/go-http-response.md
 
 For complete documentation:
 
 - @.ai-context/rules/code_style.md
 - @.ai-context/rules/project_architecture.md
 - @.ai-context/rules/config_style.md
+- @ai_go/v1/rules/http_response.md
 
 Chinese versions (中文版):
 
@@ -26,6 +28,7 @@ Chinese versions (中文版):
 - @ai_go/v1/rules/code_style_zh.md
 - @ai_go/v1/rules/project_architecture_zh.md
 - @ai_go/v1/rules/config_style_zh.md
+- @ai_go/v1/rules/http_response_zh.md
 
 ## How to Use
 
