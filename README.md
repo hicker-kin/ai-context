@@ -75,7 +75,12 @@ sh cursor_skills.sh go
 ```
 
 - Creates `.cursor/skills/`
-- Downloads `go-logging` skill (SKILL.md + examples.md) by default
+- Downloads the following Go skills (each contains `SKILL.md` + `examples.md`):
+
+| Skill | Description |
+|-------|-------------|
+| `go-logging` | Structured logging with zap, request context integration |
+| `go-jwt` | JWT signing & verification — ES256 / PS256 / RS256 / HS256 |
 
 ### 🤖 Claude Code
 
