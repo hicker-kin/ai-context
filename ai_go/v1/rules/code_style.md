@@ -16,9 +16,8 @@ project structure are defined in `project_architecture.md`.
 - MUST run `gofmt -s` on all Go files.
 - SHOULD use `goimports` to manage imports.
 - SHOULD keep lines reasonably short (<= 120) unless it harms readability.
-- SHOULD group imports as: standard library, third-party, local. Use blank lines
-  between groups.
-- Example:
+- MUST group imports as: standard library, third-party, local. Use blank lines
+between groups. Example:
 
 ```go
 // BAD
@@ -37,7 +36,7 @@ import (
 
     "mycorp/sdk/foo"  // second-party
 
-    "mycorp/app/internal/bar" // local
+    "mycorp/app/internal/bar" // local package
 )
 ```
 
@@ -128,8 +127,8 @@ func (s *UserService) Create(ctx context.Context) error {
 ```
 
 - Do not repeat the package name in any identifier (types, structs, variables,
-  functions, methods). The prefix of an identifier must not match the package name,
-  regardless of case (e.g. `federation`, `Federation`, `FEDERATION`).
+functions, methods). The prefix of an identifier must not match the package name,
+regardless of case (e.g. `federation`, `Federation`, `FEDERATION`).
 - Example:
 
 ```go
@@ -186,7 +185,7 @@ func BuildUser(ctx context.Context, cfg *Config) (*User, error) {
 ```
 
 - Within the same package, avoid reusing the same identifier for different
-  meanings across files.
+meanings across files.
 - Example:
 
 ```go
@@ -219,13 +218,13 @@ const (
 ## Request DTO Tags
 
 - When using **Gin**, use the `binding` tag for request-body validation; when using
-  other frameworks (e.g. Echo, Fiber), follow that framework's validation mechanism
-  and tag/option conventions.
+other frameworks (e.g. Echo, Fiber), follow that framework's validation mechanism
+and tag/option conventions.
 - Request structs MUST specify explicit `json` tags.
 - Required fields MUST include `binding:"required"` if required (Gin), or the
-  equivalent for your framework.
+equivalent for your framework.
 - If a field has constraints, include thresholds in `binding` (e.g. `min=3,max=64`)
-  for Gin, or the equivalent for your framework.
+for Gin, or the equivalent for your framework.
 - Optional fields SHOULD use `omitempty` in `json` tags.
 - Example:
 
@@ -251,9 +250,9 @@ type CreateCategoryReq struct {
 
 - Response structs MUST specify explicit `json` tags for API output.
 - Optional or zero-value fields SHOULD use `omitempty` so absent values are omitted
-  from JSON when appropriate.
+from JSON when appropriate.
 - Prefer consistent field naming (e.g. snake_case in JSON if that is your API
-  convention) and document the response shape (e.g. in OpenAPI).
+convention) and document the response shape (e.g. in OpenAPI).
 
 ## Functions and Methods
 
@@ -280,7 +279,6 @@ func (u *User) ValidateEmail() error { return nil }
 ```
 
 - Do not repeat the package name in function names (see Naming above).
-
 - Avoid "Get" prefix for simple accessors; use noun-like names.
 - Example:
 
@@ -304,24 +302,24 @@ func Load() (*Config, error) { return nil, nil }
 ```
 
 - Use a **pointer receiver** when the method mutates the receiver, when the type is
-  large, or for consistency if any method needs a pointer; use a **value receiver**
-  for small, immutable types.
+large, or for consistency if any method needs a pointer; use a **value receiver**
+for small, immutable types.
 - Prefer passing **pointers** for large structs or when the callee may need to modify;
-  pass by value for small types and to avoid accidental mutation.
+pass by value for small types and to avoid accidental mutation.
 
 ## Interfaces
 
 - Name interfaces by behavior (e.g. `Reader`, `Repository`), not by implementation
-  (e.g. avoid `ReaderInterface`). Prefer one or a few methods per interface when
-  possible.
+(e.g. avoid `ReaderInterface`). Prefer one or a few methods per interface when
+possible.
 - Define interfaces in the **consuming** layer (e.g. in `service` that uses a repo),
-  not next to the implementation; see `project_architecture.md`.
+not next to the implementation; see `project_architecture.md`.
 
 ## Slices and nil
 
 - A nil slice is a valid "no elements" value; JSON encoding typically produces `[]`.
-  Be consistent within a package: either return `nil` or `[]T{}` for "no results",
-  and prefer `nil` unless the caller needs a non-nil empty slice for a specific reason.
+Be consistent within a package: either return `nil` or `[]T{}` for "no results",
+and prefer `nil` unless the caller needs a non-nil empty slice for a specific reason.
 - Example:
 
 ```go
@@ -405,7 +403,7 @@ var ErrNotFound = errors.New("not found")
 ```
 
 - Do not panic in service or handler code; return errors. Panic is only acceptable
-  in package `main`/init or when a programming bug is unrecoverable.
+in package `main`/init or when a programming bug is unrecoverable.
 - Example:
 
 ```go
@@ -624,7 +622,7 @@ func Copy(c *Counter) *Counter { // avoid copying mutex
 ```
 
 - Use `defer` for cleanup (e.g. `defer f.Close()`, `defer mu.Unlock()`), so it runs
-  on all return paths and keeps code next to the acquire.
+on all return paths and keeps code next to the acquire.
 
 ## Logging (Style Only)
 
@@ -660,7 +658,8 @@ func Copy(c *Counter) *Counter { // avoid copying mutex
 
 ## References
 
-- Effective Go: <https://go.dev/doc/effective_go>
-- Go Code Review Comments: <https://go.dev/wiki/CodeReviewComments>
-- Google Go Style Guide: <https://google.github.io/styleguide/go/>
-- Google Go Style Best Practices: <https://google.github.io/styleguide/go/best-practices>
+- Effective Go: [https://go.dev/doc/effective_go](https://go.dev/doc/effective_go)
+- Go Code Review Comments: [https://go.dev/wiki/CodeReviewComments](https://go.dev/wiki/CodeReviewComments)
+- Google Go Style Guide: [https://google.github.io/styleguide/go/](https://google.github.io/styleguide/go/)
+- Google Go Style Best Practices: [https://google.github.io/styleguide/go/best-practices](https://google.github.io/styleguide/go/best-practices)
+
