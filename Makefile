@@ -1,11 +1,13 @@
 # ai content
-CURSOR_RULES_INIT_URL := https://raw.githubusercontent.com/hicker-kin/ai-context/main/cursor_rules.sh
+BASE_URL := https://raw.githubusercontent.com/hicker-kin/ai-context/main
+
+CURSOR_RULES_INIT_URL := $(BASE_URL)/cursor_rules.sh
 CURSOR_INIT := scripts/cursor_rules.sh
 
-CURSOR_SKILLS_INIT_URL := https://raw.githubusercontent.com/hicker-kin/ai-context/main/cursor_skills.sh
+CURSOR_SKILLS_INIT_URL := $(BASE_URL)/cursor_skills.sh
 CURSOR_SKILLS_INIT := scripts/cursor_skills.sh
 
-CLAUDE_RULES_INIT_URL := https://raw.githubusercontent.com/hicker-kin/ai-context/main/claude_rules.sh
+CLAUDE_RULES_INIT_URL := $(BASE_URL)/claude_rules.sh
 CLAUDE_INIT := scripts/claude_rules.sh
 
 # install cursor init scripts
