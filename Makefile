@@ -54,5 +54,5 @@ ai-rules-install: ai-rules-init cursor-rules claude-rules
 # install ai skills
 ai-skills-install: ai-skills-init cursor-skills
 
-# install ai context(contain skill)
+# install(or update) ai context(contain skill)
 ai-context-install: ai-rules-install ai-skills-install
