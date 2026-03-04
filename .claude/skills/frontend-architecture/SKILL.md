@@ -49,14 +49,41 @@ New Frontend Project
         │
         ├─ Content / Docs / Blog? ───▶ Astro 5
         │
-        ├─ Content / Blog? ──────────▶ Astro 5
-        │
         ├─ Vue team? ────────────────▶ Nuxt 3 (mirrors Next.js)
         │
         └─ General SPA ──────────────▶ React 19 + Vite + Ant Design v5
 ```
 
-## Step 4: Go Backend Integration
+## Step 4: Confirm Stack & Update README.md
+
+After the user confirms the tech stack, **MUST** update (or create) the project's `README.md` with a Tech Stack section.
+
+Template to insert/append:
+
+```markdown
+## Tech Stack
+
+| Layer | Choice |
+|-------|--------|
+| Framework | <!-- e.g. Next.js 15 (App Router) --> |
+| Language | TypeScript 5.x (strict) |
+| Build | <!-- e.g. Turbopack / Vite --> |
+| Styling | <!-- e.g. Tailwind CSS v4 --> |
+| UI Components | <!-- e.g. Ant Design v5 --> |
+| Global State | <!-- e.g. Zustand --> |
+| Server State | <!-- e.g. TanStack Query v5 --> |
+| Forms | <!-- e.g. React Hook Form + Zod --> |
+| Package Manager | pnpm |
+| Testing | Vitest + Testing Library + Playwright |
+| Linting | ESLint v9 + Prettier |
+```
+
+Rules:
+- If `README.md` already exists: append the Tech Stack section; **do NOT overwrite** existing content.
+- If `README.md` does not exist: create it with project name as heading and the Tech Stack section.
+- Fill in each row with the actual confirmed choices, removing placeholder comments.
+
+## Step 5: Go Backend Integration
 
 When the backend is Go (common in this workspace):
 
@@ -64,9 +91,9 @@ When the backend is Go (common in this workspace):
 - **Auth (JWT)**: Handle token refresh in TanStack Query's `defaultOptions` or axios interceptor
 - **CORS**: Confirm Go handler sets correct headers for the frontend origin
 
-## Step 5: Scaffold the Project
+## Step 6: Scaffold the Project
 
-After confirming the stack, run the appropriate init commands.  
+After README.md is updated, run the appropriate init commands.  
 See [templates/nextjs.md](templates/nextjs.md), [templates/vite-spa.md](templates/vite-spa.md), or [templates/astro.md](templates/astro.md) for exact commands.
 
 ## Project Structure Convention
