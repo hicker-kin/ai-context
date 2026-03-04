@@ -20,3 +20,4 @@ AI **MUST** follow these in every interaction. See full rules:
 5. **No deletion of historical code** (历史代码禁止删除): **Do NOT** delete historical code; only comment it out.
 6. **No modification without consent** (征得同意再改): **Do NOT** modify existing code's types, params, or business logic unless necessary and user approves.
 7. **Confirm tech stack before new project** (新项目先确认技术栈): Before scaffolding any new project, **MUST** confirm with the user: Go version, web framework, ORM, dev/prod DB choices (e.g. SQLite for dev, PostgreSQL for prod), and any cluster/HA design (e.g. Redis master election). Do **NOT** begin coding until user explicitly approves.
+8. **Record confirmed stack in README** (技术栈确认后写入 README): Once the user approves the tech stack, **MUST** update (or create) the project's `README.md` with a `## Tech Stack` section listing every confirmed choice. If `README.md` already exists, append without overwriting existing content.
