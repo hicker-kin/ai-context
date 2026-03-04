@@ -24,9 +24,9 @@ case "$LANGUAGE" in
   go)
     for skill in $GO_SKILLS; do
       mkdir -p ".cursor/skills/${skill}"
-      curl -fsSL "$BASE_URL/.cursor/skills/${skill}/SKILL.md" \
+      curl -fsSL "$BASE_URL/skills/${skill}/SKILL.md" \
         -o ".cursor/skills/${skill}/SKILL.md"
-      curl -fsSL "$BASE_URL/.cursor/skills/${skill}/examples.md" \
+      curl -fsSL "$BASE_URL/skills/${skill}/examples.md" \
         -o ".cursor/skills/${skill}/examples.md"
     done
     ;;
@@ -40,7 +40,7 @@ case "$LANGUAGE" in
       for file in $REACT_SKILL_FILES; do
         dir=".cursor/skills/${skill}/$(dirname "$file")"
         mkdir -p "$dir"
-        curl -fsSL "$BASE_URL/.cursor/skills/${skill}/${file}" \
+        curl -fsSL "$BASE_URL/skills/${skill}/${file}" \
           -o ".cursor/skills/${skill}/${file}"
       done
     done
