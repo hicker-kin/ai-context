@@ -71,13 +71,19 @@ Both scripts:
 **Method 1: bunx / npx (Recommended)**
 
 ```bash
-# Install all skills
-bunx skills add github.com/hicker-kin/ai-context -a cursor -y
-bunx skills add github.com/hicker-kin/ai-context -a claude-code -y
+# Install all skills（交互式选择）
+bunx skills add https://github.com/hicker-kin/ai-context.git
+
+# Install all skills to Cursor（跳过确认）
+bunx skills add https://github.com/hicker-kin/ai-context.git -a cursor -y
+bunx skills add https://github.com/hicker-kin/ai-context.git -a claude-code -y
 
 # Install a specific skill
-bunx skills add github.com/hicker-kin/ai-context --skill go-jwt -a cursor
-bunx skills add github.com/hicker-kin/ai-context --skill go-jwt -a claude-code
+bunx skills add https://github.com/hicker-kin/ai-context.git --skill go-jwt -a cursor
+bunx skills add https://github.com/hicker-kin/ai-context.git --skill go-jwt -a claude-code
+
+# List available skills
+bunx skills add https://github.com/hicker-kin/ai-context.git --list
 ```
 
 **Method 2: curl script (Legacy)**
