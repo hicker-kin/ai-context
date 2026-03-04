@@ -66,7 +66,21 @@ Both scripts:
 - Download `.mdc` summary rules into `.cursor/rules`
 - Download full rule documents into `.ai-context/rules`
 
-**Skills** – Run from the project root:
+**Skills** – Two installation methods are supported:
+
+**Method 1: bunx / npx (Recommended)**
+
+```bash
+# Install all skills
+bunx skills add github.com/hicker-kin/ai-context -a cursor -y
+bunx skills add github.com/hicker-kin/ai-context -a claude-code -y
+
+# Install a specific skill
+bunx skills add github.com/hicker-kin/ai-context --skill go-jwt -a cursor
+bunx skills add github.com/hicker-kin/ai-context --skill go-jwt -a claude-code
+```
+
+**Method 2: curl script (Legacy)**
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/hicker-kin/ai-context/main/cursor_skills.sh -o cursor_skills.sh
@@ -74,13 +88,14 @@ chmod +x cursor_skills.sh
 sh cursor_skills.sh go
 ```
 
-- Creates `.cursor/skills/`
-- Downloads the following Go skills (each contains `SKILL.md` + `examples.md`):
+Both methods create `.cursor/skills/` with the following skills:
 
 | Skill | Description |
 |-------|-------------|
 | `go-logging` | Structured logging with zap, request context integration |
 | `go-jwt` | JWT signing & verification — ES256 / PS256 / RS256 / HS256 |
+| `frontend-architecture` | Frontend tech stack selection and scaffolding (Next.js/React/Astro) |
+| `rst_go_base_guide` | Go project architecture and code style compliance guide |
 
 ### 🤖 Claude Code
 

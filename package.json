@@ -1,0 +1,6 @@
+{
+  "name": "ai-context",
+  "version": "1.0.0",
+  "description": "AI rules and skills for Go/Frontend development. Cursor/Claude Code skills for Go JWT, logging, frontend architecture, and base guide.",
+  "private": true
+}
