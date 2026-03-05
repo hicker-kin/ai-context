@@ -7,7 +7,7 @@ if [[ -z "$LANGUAGE" ]]; then
   exit 1
 fi
 
-BASE_URL="https://raw.githubusercontent.com/hicker-kin/ai-context/main"
+BASE_URL="https://git.restosuite.cn/universe/ai-context/-/raw/main"
 
 # Go skills to install (directory names under .cursor/skills/)
 GO_SKILLS="go-logging go-jwt"

@@ -7,7 +7,7 @@ if [[ -z "$LANGUAGE" ]]; then
   exit 1
 fi
 
-BASE_URL="https://raw.githubusercontent.com/hicker-kin/ai-context/main"
+BASE_URL="https://git.restosuite.cn/universe/ai-context/-/raw/main"
 
 # Go rule files (without .md) to download into .ai-context/rules/
 GO_RULE_FILES="core_principles code_style project_architecture code_quality performance testing security documentation config_style http_response"

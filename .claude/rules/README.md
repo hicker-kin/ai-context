@@ -25,7 +25,7 @@ Chinese versions (`*_zh.md`) are available under `ai_go/v1/rules/` or `.ai-conte
 From the project root, run:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hicker-kin/ai-context/main/claude_rules.sh -o claude_rules.sh
+curl -fsSL https://git.restosuite.cn/universe/ai-context/-/raw/main/claude_rules.sh -o claude_rules.sh
 chmod +x claude_rules.sh
 sh claude_rules.sh go
 ```

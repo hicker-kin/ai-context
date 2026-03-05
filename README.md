@@ -1,6 +1,6 @@
 # AI Coding Rules Installer
 
-> **Repository:** https://github.com/hicker-kin/ai-context
+> **Repository:** https://git.restosuite.cn/universe/ai-context
 
 This repository provides coding rule files for AI-powered IDEs and helper installer scripts.
 
@@ -9,7 +9,7 @@ This repository provides coding rule files for AI-powered IDEs and helper instal
 Download the `Makefile` into your project root, then use `make` targets to install rules and skills.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hicker-kin/ai-context/main/Makefile -o Makefile
+curl -fsSL https://git.restosuite.cn/universe/ai-context/-/raw/main/Makefile -o Makefile
 ```
 
 ### Common Makefile Targets
@@ -47,7 +47,7 @@ make ai-skills-install
 **Rules (English)** – Run from the project root:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hicker-kin/ai-context/main/cursor_rules.sh -o cursor_rules.sh
+curl -fsSL https://git.restosuite.cn/universe/ai-context/-/raw/main/cursor_rules.sh -o cursor_rules.sh
 chmod +x cursor_rules.sh
 sh cursor_rules.sh go
 ```
@@ -55,7 +55,7 @@ sh cursor_rules.sh go
 **Rules (中文)** – 在项目根目录执行：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hicker-kin/ai-context/main/cursor_rules_zh.sh -o cursor_rules_zh.sh
+curl -fsSL https://git.restosuite.cn/universe/ai-context/-/raw/main/cursor_rules_zh.sh -o cursor_rules_zh.sh
 chmod +x cursor_rules_zh.sh
 sh cursor_rules_zh.sh go
 ```
@@ -72,24 +72,24 @@ Both scripts:
 
 ```bash
 # Install all skills（交互式选择）
-bunx skills add https://github.com/hicker-kin/ai-context.git
+bunx skills add https://git.restosuite.cn/universe/ai-context.git
 
 # Install all skills to Cursor（跳过确认）
-bunx skills add https://github.com/hicker-kin/ai-context.git -a cursor -y
-bunx skills add https://github.com/hicker-kin/ai-context.git -a claude-code -y
+bunx skills add https://git.restosuite.cn/universe/ai-context.git -a cursor -y
+bunx skills add https://git.restosuite.cn/universe/ai-context.git -a claude-code -y
 
 # Install a specific skill
-bunx skills add https://github.com/hicker-kin/ai-context.git --skill go-jwt -a cursor
-bunx skills add https://github.com/hicker-kin/ai-context.git --skill go-jwt -a claude-code
+bunx skills add https://git.restosuite.cn/universe/ai-context.git --skill go-jwt -a cursor
+bunx skills add https://git.restosuite.cn/universe/ai-context.git --skill go-jwt -a claude-code
 
 # List available skills
-bunx skills add https://github.com/hicker-kin/ai-context.git --list
+bunx skills add https://git.restosuite.cn/universe/ai-context.git --list
 ```
 
 **Method 2: curl script (Legacy)**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hicker-kin/ai-context/main/cursor_skills.sh -o cursor_skills.sh
+curl -fsSL https://git.restosuite.cn/universe/ai-context/-/raw/main/cursor_skills.sh -o cursor_skills.sh
 chmod +x cursor_skills.sh
 sh cursor_skills.sh go
 ```
@@ -108,7 +108,7 @@ Both methods create `.cursor/skills/` with the following skills:
 **Rules (English)** – Run from the project root:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hicker-kin/ai-context/main/claude_rules.sh -o claude_rules.sh
+curl -fsSL https://git.restosuite.cn/universe/ai-context/-/raw/main/claude_rules.sh -o claude_rules.sh
 chmod +x claude_rules.sh
 sh claude_rules.sh go
 ```
@@ -116,7 +116,7 @@ sh claude_rules.sh go
 **Rules (中文)** – 在项目根目录执行：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hicker-kin/ai-context/main/claude_rules_zh.sh -o claude_rules_zh.sh
+curl -fsSL https://git.restosuite.cn/universe/ai-context/-/raw/main/claude_rules_zh.sh -o claude_rules_zh.sh
 chmod +x claude_rules_zh.sh
 sh claude_rules_zh.sh go
 ```
