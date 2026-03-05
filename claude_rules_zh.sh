@@ -7,7 +7,7 @@ if [[ -z "$LANGUAGE" ]]; then
   exit 1
 fi
 
-BASE_URL="https://git.restosuite.cn/universe/ai-context/-/raw/main"
+BASE_URL="https://git.restosuite.cn/devops-pub/ai-context/-/raw/main"
 
 # Go 规则文件名（不含 .md 后缀），同时下载英文版和中文版到 .ai-context/rules/
 GO_RULE_FILES="core_principles code_style project_architecture code_quality performance testing security documentation config_style http_response"

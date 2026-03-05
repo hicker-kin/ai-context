@@ -1,5 +1,5 @@
 # ai content
-BASE_URL := https://git.restosuite.cn/universe/ai-context/-/raw/main
+BASE_URL := https://git.restosuite.cn/devops-pub/ai-context/-/raw/main
 
 CURSOR_RULES_INIT_URL := $(BASE_URL)/cursor_rules.sh
 CURSOR_INIT := scripts/cursor_rules.sh

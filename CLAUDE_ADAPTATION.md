@@ -123,7 +123,7 @@ project/
 
 ```bash
 # Install rules for a Go project
-curl -fsSL https://git.restosuite.cn/universe/ai-context/-/raw/main/claude_rules.sh -o claude_rules.sh
+curl -fsSL https://git.restosuite.cn/devops-pub/ai-context/-/raw/main/claude_rules.sh -o claude_rules.sh
 chmod +x claude_rules.sh
 sh claude_rules.sh go
 ```
