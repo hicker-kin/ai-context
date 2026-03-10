@@ -24,4 +24,4 @@ Follow the full rules in:
 - Keep domain models independent of transport/persistence.
 - Separate handlers, usecases/services, domain, and infra.
 - Validate external input at the boundary and map to domain types.
-- Check `docs/design` and update or add design documentation when service logic changed
+- For every change (except pure code optimization/refactoring), **MUST** update corresponding documentation under `docs/`. Match the change type to the appropriate doc category: `docs/prd/` for requirements, `docs/design/` for architecture/design, `docs/plan/` for task plans, `docs/feature/` for new features, `docs/fixbug/` for bug fixes, etc. If the doc does not exist yet, create it.
