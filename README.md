@@ -4,7 +4,34 @@
 
 This repository provides coding rule files for AI-powered IDEs and helper installer scripts.
 
-## Quick Install via Makefile (Recommended)
+## Quick Installation via Git Clone (Recommended for JoyCode)
+
+Download and run the installation script, which clones the repository locally and copies rules to your project.
+
+```bash
+# Download the install script
+curl -fsSL https://raw.githubusercontent.com/hicker-kin/ai-context/main/install_rules.sh -o install_rules.sh
+chmod +x install_rules.sh
+
+# Install rules (first run clones repo to ~/.github/ai-context)
+./install_rules.sh go
+
+# Update repo and reinstall
+./install_rules.sh go --update
+
+# Install with Chinese rules prioritized
+./install_rules.sh go --zh
+```
+
+This method:
+- Clones the repository to `~/.github/ai-context` on first run
+- Caches locally for faster subsequent installs
+- Copies rules to `.ai-context/rules/` and `.joycode/rules/`
+- Generates `.joycode/JOYCODE.md` configuration file
+
+---
+
+## Quick Installation via Makefile (Recommended for Cursor/Claude)
 
 Download the `Makefile` into your project root, then use `make` targets to install rules and skills.
 
@@ -142,6 +169,7 @@ The `_zh.sh` variant generates a Chinese-first `CLAUDE.md` that references Chine
 
 | Script | Tool | Language |
 |--------|------|----------|
+| `install_rules.sh` | JoyCode | English / 中文 |
 | `cursor_rules.sh` | Cursor IDE | English |
 | `cursor_rules_zh.sh` | Cursor IDE | 中文 |
 | `claude_rules.sh` | Claude Code | English |
@@ -161,5 +189,6 @@ The `_zh.sh` variant generates a Chinese-first `CLAUDE.md` that references Chine
 ## Requirements
 
 - `curl`
+- `git` (for install_rules.sh)
 - `make` (for Makefile installation)
-- network access to GitHub raw files
+- network access to GitHub

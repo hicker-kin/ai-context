@@ -36,7 +36,7 @@ import (
 
     "mycorp/sdk/foo"  // second-party
 
-    "mycorp/app/internal/bar" // local package
+    "mycorp/app/internal/bar" // local package(go.mod 的 module)
 )
 ```
 
@@ -662,4 +662,3 @@ on all return paths and keeps code next to the acquire.
 - Go Code Review Comments: [https://go.dev/wiki/CodeReviewComments](https://go.dev/wiki/CodeReviewComments)
 - Google Go Style Guide: [https://google.github.io/styleguide/go/](https://google.github.io/styleguide/go/)
 - Google Go Style Best Practices: [https://google.github.io/styleguide/go/best-practices](https://google.github.io/styleguide/go/best-practices)
-

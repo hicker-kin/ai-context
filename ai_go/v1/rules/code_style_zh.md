@@ -35,7 +35,7 @@ import (
 
     "mycorp/sdk/foo"  // 同集团（公司）其他项目调用
 
-    "mycorp/app/internal/bar" // 本项目
+    "mycorp/app/internal/bar" // 本项目(go.mod 的 module)
 )
 ```
 
