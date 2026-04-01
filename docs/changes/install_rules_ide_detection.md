@@ -10,6 +10,10 @@
   - 否则存在 **`.joycode`** 或 **均未检测到** → 按 JoyCode 处理：不复制完整 md 到 `.joycode/rules/`，仅在缺少 `.joycode/JOYCODE.md` 时生成，条目全部使用 `@.ai-context/rules/`；未检测到 IDE 目录时 **优先 JoyCode**（会 `mkdir -p .joycode`）。
 - **检测优先级**：`.claude` > `.cursor` > `.joycode`；三者都没有时视为 JoyCode。
 
+## 修复：`ide: unbound variable`
+
+在 `set -u` 下，若使用 `local ide` 后单独一行再 `ide=$(...)`，`ide` 在赋值前处于未设置，展开 `$ide` 会报错。已改为单行 `local ide_target="$(detect_ide || echo joycode)"`，并统一使用 `${ide_target}` 引用。
+
 ## 与旧行为的差异
 
 - 以前会同时填充 `.ai-context/rules` 与 `.joycode/rules`（重复拷贝完整 md）。现在 JoyCode 侧仅保留入口文档，引用 `.ai-context/rules/`。

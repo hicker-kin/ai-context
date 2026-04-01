@@ -388,11 +388,12 @@ EOF
 install_rules() {
   install_ai_context_rules
 
-  local ide
-  ide=$(detect_ide)
-  log_info "检测到 IDE 规则目标: $ide（优先级: .claude > .cursor > .joycode；均无则 joycode）"
+  # 单行初始化：在 set -u 下，分行的 `local var` 与 `var=...` 会使 var 在赋值前处于未设置，下一行若展开 $var 会报 “unbound variable”。
+  local ide_target="$(detect_ide || echo joycode)"
 
-  case "$ide" in
+  log_info "检测到 IDE 规则目标: ${ide_target}（优先级: .claude > .cursor > .joycode；均无则 joycode）"
+
+  case "${ide_target}" in
     claude)
       install_claude_bundle
       ;;
@@ -403,7 +404,7 @@ install_rules() {
       generate_joycode_config
       ;;
     *)
-      log_warn "未知 detect_ide 结果: $ide，回退为 joycode"
+      log_warn "未知 detect_ide 结果: ${ide_target}，回退为 joycode"
       generate_joycode_config
       ;;
   esac
