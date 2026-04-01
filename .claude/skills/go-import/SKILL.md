@@ -1,6 +1,6 @@
 ---
 name: go-import
-description: Use when writing or reviewing Go imports. Enforces import grouping and ordering from ai_go/v1/rules/code_style.md: standard library, third-party, second-party, local module, with blank lines between groups and goimports/gofmt alignment.
+description: "Use when writing or reviewing Go imports. Enforces import grouping and ordering (standard library, third-party, second-party, local module) with blank lines between groups and goimports/gfmt alignment."
 ---
 
 # Go Import Sorting

@@ -127,6 +127,7 @@ Both methods create `.cursor/skills/` with the following skills:
 |-------|-------------|
 | `go-logging` | Structured logging with zap, request context integration |
 | `go-jwt` | JWT signing & verification — ES256 / PS256 / RS256 / HS256 |
+| `go-import` | Go import sorting — standard library, third-party, second-party, local module |
 | `frontend-architecture` | Frontend tech stack selection and scaffolding (Next.js/React/Astro) |
 | `rst_go_base_guide` | Go project architecture and code style compliance guide |
 
