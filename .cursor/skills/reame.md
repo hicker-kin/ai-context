@@ -6,12 +6,14 @@
 <project-root>/
 ├── skills/                              ← 真实目录（source of truth）
 │   ├── frontend-architecture/
+│   ├── go-import/
 │   ├── go-jwt/
 │   ├── go-logging/
 │   └── rst_go_base_guide/
 └── .cursor/skills/                      ← 本文件所在目录
     ├── reame.md                         (本文件)
     ├── frontend-architecture  → ../../skills/frontend-architecture
+    ├── go-import              → ../../skills/go-import
     ├── go-jwt                 → ../../skills/go-jwt
     ├── go-logging             → ../../skills/go-logging
     └── rst_go_base_guide      → ../../skills/rst_go_base_guide
@@ -22,6 +24,7 @@
 ```bash
 mkdir -p .cursor/skills
 ln -s ../../skills/frontend-architecture .cursor/skills/frontend-architecture
+ln -s ../../skills/go-import              .cursor/skills/go-import
 ln -s ../../skills/go-jwt                 .cursor/skills/go-jwt
 ln -s ../../skills/go-logging             .cursor/skills/go-logging
 ln -s ../../skills/rst_go_base_guide      .cursor/skills/rst_go_base_guide

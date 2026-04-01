@@ -10,7 +10,7 @@ fi
 BASE_URL="https://raw.githubusercontent.com/hicker-kin/ai-context/main"
 
 # Go skills to install (directory names under .cursor/skills/)
-GO_SKILLS="go-logging go-jwt"
+GO_SKILLS="go-logging go-jwt go-import"
 
 # React skills to install (directory names under .cursor/skills/)
 REACT_SKILLS="frontend-architecture"
