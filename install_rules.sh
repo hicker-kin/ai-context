@@ -8,7 +8,7 @@ usage() {
   echo "参数:"
   echo "  语言      要安装规则的语言 (go|java|react)"
   echo "  --update  更新本地仓库后再安装"
-  echo "  --zh      生成入口文档时优先中文（JOYCODE/CLAUDE 等）"
+  echo "  --zh      入口文档使用仅中文版（JOYCODE 为中文引导；CLAUDE 模板为中文）"
   echo ""
   echo "IDE 检测（在项目根目录执行）:"
   echo "  存在 .claude  → 仅安装 Claude Code 侧（.claude/rules 简要 + 入口文档）"
@@ -21,7 +21,7 @@ usage() {
   echo "示例:"
   echo "  $0 go              # 安装 Go 规则"
   echo "  $0 go --update     # 更新仓库后安装 Go 规则"
-  echo "  $0 go --zh         # 中文优先的入口文档"
+  echo "  $0 go --zh         # 仅中文版入口文档（如 JOYCODE.md）"
   exit 1
 }
 
@@ -302,26 +302,26 @@ install_cursor_bundle() {
   fi
 }
 
-# JoyCode：不复制完整 md 到 .joycode/rules，仅生成 JOYCODE.md（若不存在），全部指向 .ai-context/rules
+# JoyCode：不复制完整 md 到 .joycode/rules，仅生成 JOYCODE.md，全部指向 .ai-context/rules
+# 语言由安装参数 --zh 决定：有 --zh 则仅中文版；否则仅英文版。传 --zh 时会覆盖已存在的 JOYCODE.md 以与参数一致。
 generate_joycode_config() {
   mkdir -p ".joycode"
 
   local config_file=".joycode/JOYCODE.md"
 
-  if [[ -f "$config_file" ]]; then
-    log_info ".joycode/JOYCODE.md 已存在，跳过生成"
+  if [[ -f "$config_file" && "$ZH_PRIORITY" != true ]]; then
+    log_info ".joycode/JOYCODE.md 已存在且未使用 --zh，跳过生成。如需按参数重写：删除该文件后重装；带 --zh 重装可覆盖为仅中文版。"
     return
   fi
 
-  log_info "生成 .joycode/JOYCODE.md ..."
-
   if [[ "$ZH_PRIORITY" == true ]]; then
+    log_info "生成 .joycode/JOYCODE.md（参数 --zh：仅中文版引导）..."
     cat > "$config_file" <<'EOF'
 # 项目规则
 
 本项目遵循编码规范与清洁架构原则。**完整规则均在 `.ai-context/rules/`，此处仅列入口引用。**
 
-## 规则文件（中文优先）
+## 规则文件
 
 - @.ai-context/rules/core_principles_zh.md（每次交互必须遵守）
 - @.ai-context/rules/code_style_zh.md
@@ -333,28 +333,16 @@ generate_joycode_config() {
 - @.ai-context/rules/testing_zh.md
 - @.ai-context/rules/security_zh.md
 - @.ai-context/rules/documentation_zh.md
-
-## 规则文件（English）
-
-- @.ai-context/rules/core_principles.md
-- @.ai-context/rules/code_style.md
-- @.ai-context/rules/project_architecture.md
-- @.ai-context/rules/config_style.md
-- @.ai-context/rules/http_response.md
-- @.ai-context/rules/code_quality.md
-- @.ai-context/rules/performance.md
-- @.ai-context/rules/testing.md
-- @.ai-context/rules/security.md
-- @.ai-context/rules/documentation.md
 EOF
   else
+    log_info "生成 .joycode/JOYCODE.md（默认：仅英文版引导）..."
     cat > "$config_file" <<'EOF'
 # Project Rules
 
 This project follows coding standards and clean architecture principles.
 **Authoritative full text lives under `.ai-context/rules/`; this file lists entry references only.**
 
-## Rule files (English)
+## Rule files
 
 - @.ai-context/rules/core_principles.md (MUST follow in every interaction)
 - @.ai-context/rules/code_style.md
@@ -366,19 +354,6 @@ This project follows coding standards and clean architecture principles.
 - @.ai-context/rules/testing.md
 - @.ai-context/rules/security.md
 - @.ai-context/rules/documentation.md
-
-## 规则文件（中文）
-
-- @.ai-context/rules/core_principles_zh.md
-- @.ai-context/rules/code_style_zh.md
-- @.ai-context/rules/project_architecture_zh.md
-- @.ai-context/rules/config_style_zh.md
-- @.ai-context/rules/http_response_zh.md
-- @.ai-context/rules/code_quality_zh.md
-- @.ai-context/rules/performance_zh.md
-- @.ai-context/rules/testing_zh.md
-- @.ai-context/rules/security_zh.md
-- @.ai-context/rules/documentation_zh.md
 EOF
   fi
 

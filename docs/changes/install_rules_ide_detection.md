@@ -7,7 +7,7 @@
 - **IDE 分流**（在项目根目录执行时根据目录检测）：
   - 存在 **`.claude`** → 仅处理 Claude Code：复制仓库内 `.claude/rules/*.md` 至项目；若不存在 `.claude/CLAUDE.md` 则生成，简要规则指向 `@.claude/rules/`，完整文档指向 `@.ai-context/rules/`。
   - 否则存在 **`.cursor`** → 仅处理 Cursor：复制仓库内 `.cursor/rules/*.mdc`（及 `README.md` 若存在）至 `.cursor/rules/`；完整内容仍以 `.ai-context/rules/` 为准。
-  - 否则存在 **`.joycode`** 或 **均未检测到** → 按 JoyCode 处理：不复制完整 md 到 `.joycode/rules/`，仅在缺少 `.joycode/JOYCODE.md` 时生成，条目全部使用 `@.ai-context/rules/`；未检测到 IDE 目录时 **优先 JoyCode**（会 `mkdir -p .joycode`）。
+  - 否则存在 **`.joycode`** 或 **均未检测到** → 按 JoyCode 处理：不复制完整 md 到 `.joycode/rules/`，生成 `JOYCODE.md` 时**根据安装参数** `--zh`：有 `--zh` 则**仅**中文 `_zh.md` 引导，无 `--zh` 则**仅**英文 `.md` 引导；传 `--zh` 时会**覆盖**已存在的 `JOYCODE.md`，与参数一致。未传 `--zh` 且文件已存在则跳过生成以免覆盖。未检测到 IDE 目录时 **优先 JoyCode**（会 `mkdir -p .joycode`）。
 - **检测优先级**：`.claude` > `.cursor` > `.joycode`；三者都没有时视为 JoyCode。
 
 ## 修复：`ide: unbound variable`
