@@ -15,7 +15,22 @@ project structure are defined in `project_architecture.md`.
 
 - MUST run `gofmt -s` on all Go files.
 - SHOULD use `goimports` to manage imports.
-- SHOULD keep lines reasonably short (<= 120) unless it harms readability.
+- MUST keep each line at most **120 bytes** (UTF-8 byte length, not rune/character
+  count). Break long statements across lines rather than exceeding the limit.
+- Example:
+
+```go
+// BAD — line exceeds 120 bytes
+err := fmt.Errorf("failed to load user profile for id=%s from remote store after retries: %w", userID, err)
+
+// GOOD — wrap within 120 bytes
+err := fmt.Errorf(
+    "failed to load user profile for id=%s from remote store after retries: %w",
+    userID,
+    err,
+)
+```
+
 - MUST group imports as: standard library, third-party, local. Use blank lines
 between groups. Example:
 
@@ -307,6 +322,59 @@ for small, immutable types.
 - Prefer passing **pointers** for large structs or when the callee may need to modify;
 pass by value for small types and to avoid accidental mutation.
 
+### Size, structure, and reuse
+
+- MUST keep a single function or method within **150 lines** (all lines from the
+  signature through the closing `}`).
+- MUST comment every **important node**: non-obvious control branches, error-handling
+  trade-offs, state transitions, external I/O boundaries, and invariant/guard checks.
+  Do **not** pile `what` comments on self-explanatory statements.
+- When a function or method has **more than 3 distinct responsibilities or phases**
+  (e.g. validate → load → transform → persist → notify counts as 5), MUST mark each
+  phase with `// step1: ...` through `// stepN: ...` (English) at the start of that
+  phase. See Comments for how this interacts with "why, not what".
+- MUST prefer extracting reusable helpers (package-private or shared) over long
+  procedural "wall of code". If a function would exceed 150 lines or accumulate too
+  many responsibilities, MUST split it rather than stretch a script-style body.
+- Line length MUST follow Formatting (≤ 120 bytes).
+- Example (multi-phase with steps + helpers):
+
+```go
+// BAD — script-style wall of code, no step markers, mixed responsibilities inline
+func (s *Service) CreateOrder(ctx context.Context, req CreateOrderReq) error {
+    if req.UserID == "" {
+        return ErrInvalid
+    }
+    u, err := s.users.Get(ctx, req.UserID)
+    // ... dozens of inline lines for pricing, inventory, persist, notify ...
+    return err
+}
+
+// GOOD — steps for >3 phases; extract reusable helpers
+func (s *Service) CreateOrder(ctx context.Context, req CreateOrderReq) error {
+    // step1: validate input
+    if err := validateCreateOrder(req); err != nil {
+        return err
+    }
+    // step2: load dependencies
+    u, err := s.users.Get(ctx, req.UserID)
+    if err != nil {
+        return fmt.Errorf("load user: %w", err)
+    }
+    // step3: compute order
+    order, err := buildOrder(u, req)
+    if err != nil {
+        return fmt.Errorf("build order: %w", err)
+    }
+    // step4: persist
+    if err := s.orders.Save(ctx, order); err != nil {
+        return fmt.Errorf("save order: %w", err)
+    }
+    // step5: notify
+    return s.notify.OrderCreated(ctx, order.ID)
+}
+```
+
 ## Interfaces
 
 - Name interfaces by behavior (e.g. `Reader`, `Repository`), not by implementation
@@ -537,6 +605,10 @@ i++ // increment i
 i++ // skip sentinel value 0
 ```
 
+- Exception: `// step1: ...` through `// stepN: ...` structural markers are
+  **required** for functions with more than 3 responsibilities (see Functions and
+  Methods). The text after the colon MUST still be meaningful English (phase intent),
+  not a restatement of the next line of code.
 - Remove stale comments; avoid commented-out code.
 - Example:
 
@@ -551,7 +623,12 @@ i++ // skip sentinel value 0
 
 ## Context and Concurrency
 
-- Pass `context.Context` as the first parameter for request-scoped APIs.
+- When writing a method or function, **MUST** consider whether the work has a
+  lifecycle (cancelable I/O, long-running loops, background goroutines, or work
+  that must stop on process/request shutdown). Pure sync helpers with no
+  cancelable work do not need a context.
+- If lifecycle may be involved, **MUST** take `ctx context.Context` as the
+  **first** parameter (after the receiver).
 - Example:
 
 ```go
@@ -562,6 +639,26 @@ func (s *Service) Do(userID string, ctx context.Context) error { return nil }
 func (s *Service) Do(ctx context.Context, userID string) error { return nil }
 ```
 
+- If the task **MUST** end when the owning process or request exits, **MUST**
+  pass a context whose cancel is tied to that owner (request ctx,
+  signal-derived root, or `WithCancel`/`WithTimeout` derived from that parent).
+  **MUST NOT** start such work with a fresh `context.Background()` /
+  `context.TODO()` — that can leave goroutines uncancellable (“zombie”) and
+  block clean shutdown.
+- Example:
+
+```go
+// BAD — Background cannot be cancelled on process shutdown; goroutine may become zombie
+go worker.Run(context.Background())
+
+// GOOD — pass parent ctx that main/signal/request can cancel
+go worker.Run(ctx) // ctx from main WithCancel / signal.NotifyContext / request
+```
+
+- `context.Background()` / `context.TODO()` **MAY** only appear at intentional
+  lifetime roots (e.g. `main` bootstrap, tests, or an explicitly independent
+  background job with its own cancel/shutdown hook). Child work **MUST** still
+  receive a derived, cancellable child of that root—not a new Background.
 - Do not store `context.Context` in structs.
 - Example:
 

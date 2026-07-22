@@ -14,7 +14,22 @@
 
 - 对所有 Go 文件运行 `gofmt -s`。
 - 建议使用 `goimports` 管理 import。
-- 建议保持行长度适中（<= 120 字符），除非影响可读性。
+- **MUST** 单行不超过 **120 字节**（UTF-8 字节长度，不是 rune/字符数）。超长语句应换行，
+  而不是突破上限。
+- 示例：
+
+```go
+// BAD — line exceeds 120 bytes
+err := fmt.Errorf("failed to load user profile for id=%s from remote store after retries: %w", userID, err)
+
+// GOOD — wrap within 120 bytes
+err := fmt.Errorf(
+    "failed to load user profile for id=%s from remote store after retries: %w",
+    userID,
+    err,
+)
+```
+
 - import 分组建议为：标准库、第三方、本地。组之间空行分隔。
 - 示例：
 
@@ -295,6 +310,55 @@ func Load() (*Config, error) { return nil, nil }
 - 方法**修改接收者**、类型**较大**或为保持一致（若任一方法需指针）时，使用**指针接收者**；小且不可变类型使用**值接收者**。
 - 大结构体或可能被修改时优先**传指针**；小类型或需避免意外修改时**传值**。
 
+### 体积、结构与复用
+
+- **MUST** 单个函数或方法不超过 **150 行**（从签名到结束 `}` 的全部行）。
+- **MUST** 为每个**重要节点**加注释：非显然的控制分支、错误处理取舍、状态迁移、
+  外部 I/O 边界、不变量/守卫。禁止给自解释语句堆 `what` 注释。
+- 当函数或方法有**超过 3 个独立职责或阶段**（例如 validate → load → transform →
+  persist → notify 计为 5）时，**MUST** 在各阶段起点用 `// step1: ...` 至
+  `// stepN: ...`（英文）标记。与「为什么而非做什么」的关系见「注释」。
+- **MUST** 优先封装为可复用的函数/方法（包内私有或共享 helper），避免流水账式长过程。
+  若将超过 150 行或职责过多，**MUST** 拆分，而不是拉长脚本式主体。
+- 行长度 **MUST** 遵循「格式」（≤ 120 字节）。
+- 示例（多阶段 step + helper）：
+
+```go
+// BAD — script-style wall of code, no step markers, mixed responsibilities inline
+func (s *Service) CreateOrder(ctx context.Context, req CreateOrderReq) error {
+    if req.UserID == "" {
+        return ErrInvalid
+    }
+    u, err := s.users.Get(ctx, req.UserID)
+    // ... dozens of inline lines for pricing, inventory, persist, notify ...
+    return err
+}
+
+// GOOD — steps for >3 phases; extract reusable helpers
+func (s *Service) CreateOrder(ctx context.Context, req CreateOrderReq) error {
+    // step1: validate input
+    if err := validateCreateOrder(req); err != nil {
+        return err
+    }
+    // step2: load dependencies
+    u, err := s.users.Get(ctx, req.UserID)
+    if err != nil {
+        return fmt.Errorf("load user: %w", err)
+    }
+    // step3: compute order
+    order, err := buildOrder(u, req)
+    if err != nil {
+        return fmt.Errorf("build order: %w", err)
+    }
+    // step4: persist
+    if err := s.orders.Save(ctx, order); err != nil {
+        return fmt.Errorf("save order: %w", err)
+    }
+    // step5: notify
+    return s.notify.OrderCreated(ctx, order.ID)
+}
+```
+
 ## 接口
 
 - 接口按行为命名（如 `Reader`、`Repository`），不按实现（如避免 `ReaderInterface`）。尽量每个接口只有少量方法。
@@ -519,6 +583,9 @@ i++ // 自增 i
 i++ // 跳过哨兵值 0
 ```
 
+- 例外：职责超过 3 个的函数所要求的 `// step1: ...` 至 `// stepN: ...` 结构标记
+  （见「函数与方法」）是强制例外。冒号后的说明 **MUST** 仍为有意义的英文（阶段意图），
+  而不是复述下一行代码。
 - 移除过时注释；避免被注释掉的代码。
 - 示例：
 
@@ -533,7 +600,11 @@ i++ // 跳过哨兵值 0
 
 ## Context 与并发
 
-- 将 `context.Context` 作为请求作用域 API 的第一个参数。
+- 编写方法或函数时，**MUST** 先考虑工作是否有生命周期（可取消的 I/O、长循环、
+  后台 goroutine、或必须随进程/请求退出而停止的工作）。无任何可取消工作的纯同步
+  辅助函数不需要 context。
+- 若可能涉及生命周期，**MUST** 将 `ctx context.Context` 作为**第一个**参数（接收者
+  之后）。
 - 示例：
 
 ```go
@@ -544,6 +615,23 @@ func (s *Service) Do(userID string, ctx context.Context) error { return nil }
 func (s *Service) Do(ctx context.Context, userID string) error { return nil }
 ```
 
+- 若任务**必须**随所属进程或请求退出而结束，**MUST** 传递取消能力绑定到该所有者的
+  上下文（请求 ctx、信号派生的根上下文，或由该父上下文派生的
+  `WithCancel`/`WithTimeout`）。**MUST NOT** 用全新的 `context.Background()` /
+  `context.TODO()` 启动此类工作——否则 goroutine 可能无法取消（“僵尸”），阻塞干净退出。
+- 示例：
+
+```go
+// 不良 — Background 无法在进程退出时取消；goroutine 可能变成僵尸
+go worker.Run(context.Background())
+
+// 良好 — 传入可由 main/信号/请求取消的父 ctx
+go worker.Run(ctx) // ctx 来自 main WithCancel / signal.NotifyContext / 请求
+```
+
+- `context.Background()` / `context.TODO()` **MAY** 仅出现在有意的生命周期根
+  （例如 `main` 启动、测试，或带有独立 cancel/关闭钩子的显式独立后台任务）。子工作
+  **MUST** 仍接收该根派生的可取消子上下文——而不是新的 Background。
 - 不要在结构体中存储 `context.Context`。
 - 示例：
 
