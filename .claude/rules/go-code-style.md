@@ -18,7 +18,7 @@ When writing or generating Go code, **MUST** follow the **Formatting** and **Nam
 ## Key MUSTs
 
 - Run `gofmt -s` (and prefer `goimports`).
-- Each line MUST be ≤ 120 bytes (UTF-8); each function/method MUST be ≤ 150 lines.
+- Each Go code line MUST be ≤ 120 bytes (UTF-8); pure comment-only lines are exempt. Each function/method MUST be ≤ 150 lines.
 - Comment every important node (non-obvious branches, error trade-offs, state transitions, I/O boundaries, guards).
 - Functions with more than 3 responsibilities MUST use `// step1: ...` … `// stepN: ...` (English).
 - Prefer extracting reusable helpers over script-style wall-of-code.

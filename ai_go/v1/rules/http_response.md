@@ -6,6 +6,18 @@ This document defines the standard HTTP response structures and JSON tag rules
 for all handler-layer responses. Architecture and layering rules are in
 `project_architecture.md`.
 
+## Compatibility First
+
+- Existing projects **MUST** preserve their current HTTP response envelope,
+  JSON field names, pagination shape, and status-code semantics.
+- Do not change an existing API contract only to comply with this document.
+  Migration requires explicit user approval and a new API version or another
+  compatible rollout mechanism.
+- The `HTTPResponse`, `BaseResponse`, and `Pagination` structures below apply
+  to new projects, new APIs, or APIs with an approved migration.
+- Regardless of the existing response shape, response DTO fields must still
+  declare explicit `json` tags.
+
 ## Rule Levels
 
 - MUST: mandatory
@@ -14,8 +26,9 @@ for all handler-layer responses. Architecture and layering rules are in
 
 ## Rule 1: Standard Response Wrapper
 
-All HTTP handler responses **MUST** use `HTTPResponse` as the top-level
-response envelope when returning a generic/untyped response.
+New projects, new APIs, or APIs with an approved migration **MUST** use
+`HTTPResponse` as the top-level response envelope when returning a
+generic/untyped response.
 
 The following constants **MUST** be used for successful responses:
 
@@ -49,7 +62,7 @@ Field semantics:
 
 ## Rule 2: Typed Response — BaseResponse Embedding
 
-For typed, endpoint-specific responses, **MUST** embed `BaseResponse` and
+Typed responses governed by this format **MUST** embed `BaseResponse` and
 declare a `Result` field with an explicit `json:"result"` tag.
 
 ```go
@@ -84,8 +97,8 @@ type FormTemplateResp struct {
 
 ## Rule 3: Pagination Wrapper
 
-All paginated response payloads **MUST** use the `Pagination` struct and name
-the JSON field `"pagination"`.
+Paginated response payloads governed by this format **MUST** use the
+`Pagination` struct and name the JSON field `"pagination"`.
 
 ```go
 // GOOD — pagination wrapper
@@ -171,6 +184,7 @@ type HTTPResponse struct {
 
 | Situation                           | Requirement                                                     |
 |-------------------------------------|-----------------------------------------------------------------|
+| Existing API                        | Preserve its contract; do not migrate without approval          |
 | Generic handler return              | Use `HTTPResponse` envelope                                     |
 | Typed endpoint response             | Embed `BaseResponse`; declare `Result` with `json:"result"`     |
 | Paginated payload                   | Use `Pagination` struct; name field `json:"pagination"`         |

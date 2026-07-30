@@ -1,5 +1,5 @@
 ---
-description: Core principles for all development (no speculation, confirm first, YAGNI, doc changes, no delete, no modify without consent)
+description: Core principles for all development (confirm first, YAGNI, docs, remove obsolete code, consent)
 ---
 
 # Core Principles
@@ -17,7 +17,7 @@ AI **MUST** follow these in every interaction. See full rules:
 2. **Confirm first** (确认优先): When unsure of user intent, **confirm before executing**.
 3. **YAGNI**: Only implement explicitly requested functionality. **Do NOT** add unrequested extensions.
 4. **Document all changes** (变动必记): All changes (new features or bugs) **MUST** be documented under project root `docs/`.
-5. **No deletion of historical code** (历史代码禁止删除): **Do NOT** delete historical code; only comment it out.
+5. **Remove obsolete code** (清理过时代码): Delete replaced or obsolete code and rely on version control for history. Do not keep old code as comments or delete unrelated code.
 6. **No modification without consent** (征得同意再改): **Do NOT** modify existing code's types, params, or business logic unless necessary and user approves.
 7. **Confirm tech stack before new project** (新项目先确认技术栈): Before scaffolding any new project, **MUST** confirm with the user: Go version, web framework, ORM, dev/prod DB choices (e.g. SQLite for dev, PostgreSQL for prod), and any cluster/HA design (e.g. Redis master election). Do **NOT** begin coding until user explicitly approves.
 8. **Record confirmed stack in README** (技术栈确认后写入 README): Once the user approves the tech stack, **MUST** update (or create) the project's `README.md` with a `## Tech Stack` section listing every confirmed choice. If `README.md` already exists, append without overwriting existing content.

@@ -29,34 +29,49 @@ func mustOpen(t *testing.T, path string) *os.File {
 }
 
 func TestGetUser(t *testing.T) {
-    ctrl := gomock.NewController(t)
-    defer ctrl.Finish()
-
-    repo := mock.NewMockUserRepo(ctrl)
-    repo.EXPECT().
-        FindByID(gomock.Any(), int64(1)).
-        Return(&User{ID: 1, Name: "john"}, nil)
-
     tests := []struct {
-        name string
-        id   int64
-        want string
-        err  bool
+        name    string
+        id      int64
+        setup   func(*mock.MockUserRepo)
+        want    string
+        wantErr bool
     }{
-        {"ok", 1, "john", false},
-        {"not_found", 2, "", true},
+        {
+            name: "ok",
+            id:   1,
+            setup: func(repo *mock.MockUserRepo) {
+                repo.EXPECT().
+                    FindByID(gomock.Any(), int64(1)).
+                    Return(&User{ID: 1, Name: "john"}, nil)
+            },
+            want: "john",
+        },
+        {
+            name: "not_found",
+            id:   2,
+            setup: func(repo *mock.MockUserRepo) {
+                repo.EXPECT().
+                    FindByID(gomock.Any(), int64(2)).
+                    Return(nil, ErrNotFound)
+            },
+            wantErr: true,
+        },
     }
 
     for _, tc := range tests {
         tc := tc
         t.Run(tc.name, func(t *testing.T) {
             t.Parallel()
+            ctrl := gomock.NewController(t)
+            repo := mock.NewMockUserRepo(ctrl)
+            tc.setup(repo)
+
             ctx, cancel := context.WithTimeout(context.Background(), time.Second)
             defer cancel()
 
             svc := NewService(repo)
             u, err := svc.GetUser(ctx, tc.id)
-            if tc.err {
+            if tc.wantErr {
                 require.Error(t, err)
                 return
             }

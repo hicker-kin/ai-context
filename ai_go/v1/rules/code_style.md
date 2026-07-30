@@ -15,13 +15,19 @@ project structure are defined in `project_architecture.md`.
 
 - MUST run `gofmt -s` on all Go files.
 - SHOULD use `goimports` to manage imports.
-- MUST keep each line at most **120 bytes** (UTF-8 byte length, not rune/character
-  count). Break long statements across lines rather than exceeding the limit.
+- MUST keep each physical line containing Go code tokens at most **120 bytes**
+  (UTF-8 byte length, not rune/character count). Pure comment-only lines are
+  exempt. A line containing code plus a trailing comment is measured as one
+  complete physical line. Break long statements across lines rather than
+  exceeding the limit.
 - Example:
 
 ```go
 // BAD — line exceeds 120 bytes
 err := fmt.Errorf("failed to load user profile for id=%s from remote store after retries: %w", userID, err)
+
+// GOOD — pure comment lines are not subject to the code-line byte limit
+// This comment may contain longer design context because it contains no Go code token.
 
 // GOOD — wrap within 120 bytes
 err := fmt.Errorf(
@@ -336,7 +342,8 @@ pass by value for small types and to avoid accidental mutation.
 - MUST prefer extracting reusable helpers (package-private or shared) over long
   procedural "wall of code". If a function would exceed 150 lines or accumulate too
   many responsibilities, MUST split it rather than stretch a script-style body.
-- Line length MUST follow Formatting (≤ 120 bytes).
+- Code line length MUST follow Formatting (≤ 120 bytes; pure comment-only
+  lines are exempt).
 - Example (multi-phase with steps + helpers):
 
 ```go
@@ -385,9 +392,11 @@ not next to the implementation; see `project_architecture.md`.
 
 ## Slices and nil
 
-- A nil slice is a valid "no elements" value; JSON encoding typically produces `[]`.
-Be consistent within a package: either return `nil` or `[]T{}` for "no results",
-and prefer `nil` unless the caller needs a non-nil empty slice for a specific reason.
+- A nil slice is a valid "no elements" value. The standard `encoding/json`
+  package encodes a nil slice as `null` and a non-nil empty slice such as
+  `[]T{}` as `[]`. Keep package and API contracts consistent: return a non-nil
+  empty slice when the response requires a JSON array; otherwise a nil slice is
+  acceptable.
 - Example:
 
 ```go

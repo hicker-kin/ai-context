@@ -4,9 +4,9 @@ paths:
   - "**/*.go"
 ---
 
-# Go HTTP Response Format (MUST follow)
+# Go HTTP Response Format (MUST follow when applicable)
 
-> **Authoritative rule (MUST follow):** `@ai_go/v1/rules/http_response.md`
+> **Authoritative rule:** `@ai_go/v1/rules/http_response.md`
 
 Also available:
 
@@ -16,6 +16,7 @@ Also available:
 
 ## Key MUSTs
 
+- **Compatibility first**: preserve existing API response contracts. Apply the standard envelope only to new APIs or explicitly approved, versioned migrations.
 - **Generic response**: use `HTTPResponse` as the top-level envelope.
 - **Typed response**: embed `BaseResponse`; declare `Result` with `json:"result"`.
 - **Pagination**: use `Pagination` struct; field name **MUST** be `json:"pagination"`.

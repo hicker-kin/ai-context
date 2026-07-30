@@ -8,7 +8,7 @@ AI **MUST** follow these principles in every development interaction.
 - **Confirm first** (确认优先): When unsure of user intent, **confirm before executing**.
 - **YAGNI** (You Aren't Gonna Need It): Only implement explicitly requested functionality. **Do NOT** add unrequested extensions or features.
 - **Document all changes** (变动必记): All changes—whether new features or bug fixes—**MUST** be documented under the project root `docs/` directory.
-- **No deletion of historical code** (历史代码禁止删除): **Do NOT** delete historical code. Only comment it out when replacing.
+- **Remove obsolete code** (清理过时代码): Delete replaced or obsolete code and rely on version control for history. **Do NOT** comment out old code only to preserve history, and do not delete code unrelated to the current task.
 - **No modification without consent** (征得同意再改): **Do NOT** modify existing code's types, parameters, or business logic unless necessary. When such changes are required, **MUST** obtain user consent first.
 - **Confirm tech stack before new project** (新项目先确认技术栈): Before starting any new project, **MUST** confirm with the user: the technology stack and versions, environment-specific choices (e.g. SQLite for dev, PostgreSQL for prod), and core architectural decisions (e.g. Redis-based master election for clustered deployments). Do **NOT** begin scaffolding or coding until the user explicitly approves the stack and architecture.
 - **Record confirmed stack in README** (技术栈确认后写入 README): Once the user approves the tech stack, **MUST** update (or create) the project's `README.md` with a `## Tech Stack` section listing every confirmed choice. If `README.md` already exists, append the section without overwriting existing content.
@@ -21,7 +21,7 @@ AI **MUST** follow these principles in every development interaction.
 | Confirm first | Prevents rework from misaligned expectations. |
 | YAGNI | Keeps scope tight, reduces complexity, and respects user control. |
 | Document all changes | Maintains traceability and team alignment. |
-| No deletion of historical code | Preserves audit trail and enables rollback. |
+| Remove obsolete code | Version control preserves audit and rollback history; removing dead code avoids maintenance noise. |
 | No modification without consent | Avoids breaking callers and unexpected side effects. |
 | Confirm tech stack before new project | Prevents wasted scaffolding and avoids costly rework from mismatched environment assumptions. |
 | Record confirmed stack in README | Makes the agreed stack visible to all contributors and prevents repeated confirmation questions. |
@@ -36,9 +36,9 @@ AI **MUST** follow these principles in every development interaction.
 
 **GOOD**: User says "refactor this" → AI asks: "What specifically would you like improved—extract functions, rename, split package, or something else?"
 
-**BAD**: Replacing a function implementation by deleting the old code.
+**BAD**: Keeping the replaced implementation as a large commented-out block next to the new implementation.
 
-**GOOD**: Comment out the old code, add the new implementation below or nearby, and document the change in `docs/`.
+**GOOD**: Delete the replaced implementation, rely on version control for history, and document the change in `docs/`.
 
 **BAD**: Changing a function's signature or return type without asking the user.
 

@@ -14,13 +14,17 @@
 
 - 对所有 Go 文件运行 `gofmt -s`。
 - 建议使用 `goimports` 管理 import。
-- **MUST** 单行不超过 **120 字节**（UTF-8 字节长度，不是 rune/字符数）。超长语句应换行，
-  而不是突破上限。
+- **MUST** 每个包含 Go 代码 token 的物理行不超过 **120 字节**（UTF-8 字节长度，
+  不是 rune/字符数）。纯注释行不受此限制；包含代码和行尾注释的行仍按完整物理行计算。
+  超长语句应换行，而不是突破上限。
 - 示例：
 
 ```go
 // BAD — line exceeds 120 bytes
 err := fmt.Errorf("failed to load user profile for id=%s from remote store after retries: %w", userID, err)
+
+// GOOD — pure comment lines are not subject to the code-line byte limit
+// 这里可以写较长的设计背景、约束与原因，因为这一行只包含注释，不包含 Go 代码 token。
 
 // GOOD — wrap within 120 bytes
 err := fmt.Errorf(
@@ -320,7 +324,7 @@ func Load() (*Config, error) { return nil, nil }
   `// stepN: ...`（英文）标记。与「为什么而非做什么」的关系见「注释」。
 - **MUST** 优先封装为可复用的函数/方法（包内私有或共享 helper），避免流水账式长过程。
   若将超过 150 行或职责过多，**MUST** 拆分，而不是拉长脚本式主体。
-- 行长度 **MUST** 遵循「格式」（≤ 120 字节）。
+- 代码行长度 **MUST** 遵循「格式」（≤ 120 字节；纯注释行除外）。
 - 示例（多阶段 step + helper）：
 
 ```go
@@ -366,7 +370,9 @@ func (s *Service) CreateOrder(ctx context.Context, req CreateOrderReq) error {
 
 ## Slice 与 nil
 
-- nil slice 表示“无元素”；JSON 编码通常产生 `[]`。包内保持一致：要么返回 `nil` 要么返回 `[]T{}` 表示“无结果”；若无特殊需求，优先 `nil`。
+- nil slice 表示“无元素”；标准库 `encoding/json` 将 nil slice 编码为 `null`，
+  将非 nil 空 slice（如 `[]T{}`）编码为 `[]`。包内及 API 契约必须保持一致：
+  若响应要求 JSON 数组，返回非 nil 空 slice；否则可使用 nil slice。
 - 示例：
 
 ```go

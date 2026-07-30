@@ -5,6 +5,15 @@
 本文档定义所有 handler 层 HTTP 响应结构体和 JSON tag 的统一规范。
 架构分层规则参见 `project_architecture.md`。
 
+## 兼容性优先
+
+- 已有项目 **MUST** 保持现有 HTTP 响应包装体、JSON 字段名、分页格式及状态码语义。
+- 不得仅为符合本文档而修改已有 API 契约。迁移必须由用户明确批准，并通过新 API 版本
+  或其他兼容方案实施。
+- 下述 `HTTPResponse`、`BaseResponse` 和 `Pagination` 结构适用于新项目、新 API，
+  或已批准迁移的 API。
+- 无论采用哪种现有响应结构，响应 DTO 字段仍必须显式声明 `json` tag。
+
 ## 规则等级
 
 - MUST：强制
@@ -13,8 +22,8 @@
 
 ## 规则 1：标准响应包装体
 
-所有 HTTP handler 返回通用/无类型响应时，**MUST** 使用 `HTTPResponse` 作为
-顶层响应包装体。
+适用本规范的新项目、新 API 或已批准迁移的 API，在返回通用/无类型响应时，
+**MUST** 使用 `HTTPResponse` 作为顶层响应包装体。
 
 成功响应的 Code 和 Msg **MUST** 使用以下预定义常量：
 
@@ -48,8 +57,8 @@ type HTTPResponse struct {
 
 ## 规则 2：类型化响应 — 嵌入 BaseResponse
 
-针对具体接口的类型化响应，**MUST** 嵌入 `BaseResponse`，并显式声明
-带有 `json:"result"` tag 的 `Result` 字段。
+适用本规范的类型化响应 **MUST** 嵌入 `BaseResponse`，并显式声明带有
+`json:"result"` tag 的 `Result` 字段。
 
 ```go
 // GOOD — BaseResponse 持有公共字段
@@ -83,8 +92,8 @@ type FormTemplateResp struct {
 
 ## 规则 3：分页包装体
 
-所有分页响应的数据体，**MUST** 使用 `Pagination` 结构体，并将
-JSON 字段名设为 `"pagination"`。
+适用本规范的分页响应数据体 **MUST** 使用 `Pagination` 结构体，并将 JSON 字段名
+设为 `"pagination"`。
 
 ```go
 // GOOD — 分页结构体
@@ -169,6 +178,7 @@ type HTTPResponse struct {
 
 | 场景                             | 要求                                                        |
 |----------------------------------|-------------------------------------------------------------|
+| 已有 API                         | 保持现有响应契约；未经批准不得迁移                          |
 | 通用 handler 返回                | 使用 `HTTPResponse` 包装体                                  |
 | 类型化接口响应                   | 嵌入 `BaseResponse`；`Result` 字段用 `json:"result"`        |
 | 分页数据体                       | 使用 `Pagination` 结构体；字段名用 `json:"pagination"`      |
