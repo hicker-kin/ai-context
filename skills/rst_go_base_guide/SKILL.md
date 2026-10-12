@@ -52,7 +52,7 @@ For more detail on what each file covers, see [reference.md](reference.md).
 
 ## Code style MUST when coding
 
-When writing or generating code, **MUST** follow the **Formatting** and **Naming** sections in code_style.md (resolve path via the **Rule lookup order** above). These are mandatory (gofmt/goimports, import grouping, line length, package/file/identifier naming, abbreviations, receiver names, etc.). Do not skip or relax them. If code_style.md cannot be found, report the failure to the user as in the lookup order section.
+When writing or generating code, **MUST** follow the **Formatting** and **Naming** sections in code_style.md (resolve path via the **Rule lookup order** above). These are mandatory (gofmt/goimports, import grouping, line length, package/file/identifier naming, abbreviations, receiver names, etc.). **MUST NOT** use magic values; name domain literals with `const` or `iota` (see **Magic Values** in code_style.md). A closed business vocabulary **MUST NOT** be a bare `string` or `int`: use a defined type plus constants, or an exhaustive value comment (see **Domain Values** in code_style.md). Do not skip or relax them. If code_style.md cannot be found, report the failure to the user as in the lookup order section.
 
 ## Guiding behavior
 
@@ -78,5 +78,7 @@ Use this checklist when implementing or reviewing; details remain in the rule fi
 - [ ] No panic in service or handler; return errors.
 - [ ] Request/response DTOs have explicit `json` tags; validation per framework (e.g. Gin binding).
 - [ ] **Formatting and Naming** from code_style.md are followed (gofmt, imports, package/file/identifier naming).
+- [ ] No magic values: domain literals are named `const` or `iota` (see **Magic Values** in code_style.md).
+- [ ] Closed business vocabularies use a defined type plus constants, or an exhaustive value comment (see **Domain Values** in code_style.md). A pure alias (`type T = string`) does not comply.
 - [ ] SDD and similar docs under `docs/changelog`; PRD and design docs under `docs/design`.
 - [ ] Business logic changes: update or add design docs under `docs/design`.

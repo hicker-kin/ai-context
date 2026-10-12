@@ -221,19 +221,130 @@ var dbCfg = LoadDBConfig()
 var cacheCfg = LoadCacheConfig()
 ```
 
-- Use `const` for invariants; use `iota` for enumerated constants.
+## Magic Values
+
+- **MUST NOT** use magic values in logic. A magic value is an unnamed numeric or
+  string literal that encodes a business or technical meaning: status, code,
+  limit, threshold, timeout, ratio, key, path, or role.
+- **MUST** name that meaning with `const`. Enumerations **MUST** use `iota`.
+  The literal may appear only in that declaration. When the standard library
+  already names it (`http.StatusOK`, `time.Second`), use that name instead of
+  a raw literal.
+- The following are not magic values and **MAY** stay inline:
+  - `0`, `1`, and `-1` used as a zero value, count, index, or slice bound
+  - `""` used as a zero value
+  - `true` and `false`
+  - format strings, and human-readable log or error text
+  - fixtures and expected values in `_test.go`
 - Example:
 
 ```go
+// BAD
+if status == 2 {
+    return nil
+}
+if retries > 3 {
+    return fmt.Errorf("give up")
+}
+time.Sleep(500 * time.Millisecond)
+if role == "admin" {
+    return nil
+}
+
 // GOOD
-const defaultTimeout = 10 * time.Second
+const (
+    statusActive = 2
+    maxRetries   = 3
+    retryDelay   = 500 * time.Millisecond
+    roleAdmin    = "admin"
+)
+
+if status == statusActive {
+    return nil
+}
+if retries > maxRetries {
+    return fmt.Errorf("give up")
+}
+time.Sleep(retryDelay)
+if role == roleAdmin {
+    return nil
+}
 
 type Status int
+
 const (
     StatusUnknown Status = iota
     StatusActive
     StatusDone
 )
+```
+
+## Domain Values
+
+A domain value is a basic type (`string`, `int`, and so on) whose legal contents
+are a fixed business vocabulary: mode, engine, topology, role, status code.
+Free text (names, descriptions, user input, log or error text) is not a domain
+value.
+
+- **MUST NOT** declare a domain value as a bare basic type that does not show
+  its legal set. This applies to fields, parameters, results, and variables.
+- **MUST** make every known legal value visible at the declaration, using one
+  of the two forms below. A named type is preferred: jumping to the type shows
+  the set, and the constants satisfy **Magic Values**.
+  1. **Named type + constants.** Use a defined type (`type Engine string`) and
+     a `const` for each known value (`iota` for enumerations). Do **not** use
+     a pure alias (`type Engine = string`): an alias is the same type as
+     `string`, so the values do not gather under a distinct type.
+     A value that means "unconfirmed" or not yet enumerated **MUST** be its
+     own constant, with a comment that says so. An unexplained `""` does not
+     count.
+  2. **Exhaustive comment.** If the declaration stays a basic type, the comment
+     **MUST** list every currently known literal as `"vllm" | "sglang" | ""`.
+     One literal is enough when it is the only known value. An empty string or
+     any unconfirmed value **MUST** be written out and marked, for example
+     `""（无法确认）`. A comment that only restates the field name, or that
+     drops the empty or unknown value, does not comply.
+- Call sites **MUST** still use the constant names. An exhaustive comment
+  documents the declaration; it does not allow raw literals in logic (see
+  **Magic Values**).
+- Example:
+
+```go
+// BAD — bare string; the legal set is invisible
+type ScaleValueV2 struct {
+    Mode     string `json:"mode"`
+    Engine   string `json:"engine"`
+    Topology string `json:"topology"`
+}
+
+// GOOD — defined type; jump to Engine to see every value
+type Engine string
+
+const (
+    EngineVLLM    Engine = "vllm"
+    EngineSGLang  Engine = "sglang"
+    EngineUnknown Engine = "" // unconfirmed
+)
+
+type Topology string
+
+const (
+    TopologySingle Topology = "single"
+    TopologyPD     Topology = "pd"
+)
+
+type ScaleValueV2 struct {
+    Mode     string   `json:"mode"` // "basic"
+    Engine   Engine   `json:"engine"`
+    Topology Topology `json:"topology"`
+}
+
+// GOOD — basic type kept; the comment lists every known literal
+type ScaleValueV2 struct {
+    Mode     string `json:"mode"`     // "basic"
+    Engine   string `json:"engine"`   // "vllm" | "sglang" | "" (unconfirmed)
+    Topology string `json:"topology"` // "single" | "pd"
+}
 ```
 
 ## Request DTO Tags
@@ -761,6 +872,8 @@ on all return paths and keeps code next to the acquire.
 6. Use global variables
 7. Block without timeouts
 8. Create unbounded goroutines
+9. Use magic values for status, limits, timeouts, keys, or paths
+10. Declare a closed business vocabulary as a bare `string` or `int` with no named type and no exhaustive value comment
 
 ## References
 

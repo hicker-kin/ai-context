@@ -11,7 +11,7 @@ One-line summaries of each rule source used by rst_go_base_guide. Paths are rela
 | `ai_go/v1/rules/project_architecture.md` | Project structure, directory layout, layering and dependency rules, API design, observability, health checks, config, testing, security, Go version/module, project init (Cobra), technology stack, deployment. |
 | `ai_go/v1/rules/project_architecture_zh.md` | 同上（中文版） |
 | `.ai-context/rules/project_architecture_zh.md` | 同上（中文版，三方项目） |
-| `ai_go/v1/rules/code_style.md` | Go formatting, naming, file layout, request/response DTO tags, functions and methods, interfaces, slices and nil, errors, control flow, comments, context and concurrency, testing style, logging, summary do's and don'ts. |
+| `ai_go/v1/rules/code_style.md` | Go formatting, naming, file layout, magic values (`const`/`iota`), domain values (defined type or exhaustive comment), request/response DTO tags, functions and methods, interfaces, slices and nil, errors, control flow, comments, context and concurrency, testing style, logging, summary do's and don'ts. |
 | `ai_go/v1/rules/code_style_zh.md` | 同上（中文版） |
 | `.ai-context/rules/code_style_zh.md` | 同上（中文版，三方项目） |
 | `ai_go/v1/rules/code_quality.md` | Composition, explicit errors, cleanup. |

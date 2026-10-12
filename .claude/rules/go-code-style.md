@@ -29,3 +29,5 @@ When writing or generating Go code, **MUST** follow the **Formatting** and **Nam
 - Consider function lifecycle; if cancelable/background work may apply, first param MUST be `ctx context.Context`; do not store ctx in structs.
 - Propagate a parent-controlled ctx for shutdown-bound tasks — do not use fresh `Background`/`TODO` (avoids zombie goroutines); do not copy `sync.Mutex`/`sync.WaitGroup`.
 - Request DTOs: explicit `json` tags; with Gin use `binding`; with other frameworks use their validation.
+- MUST NOT use magic values: unnamed literals that encode status, limits, timeouts, keys, or paths. Name them with `const` or `iota`. Inline `0`/`1`/`-1`, `""`, booleans, format/log text, and `_test.go` fixtures are allowed.
+- A closed business vocabulary MUST NOT be a bare `string` or `int`. Prefer a defined type (`type Engine string`) plus constants for every known value, including an explicit unconfirmed value. Otherwise the comment MUST list every known literal (`"vllm" | "sglang" | ""`). A pure alias (`type Engine = string`) does not comply.

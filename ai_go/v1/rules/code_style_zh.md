@@ -215,19 +215,121 @@ var dbCfg = LoadDBConfig()
 var cacheCfg = LoadCacheConfig()
 ```
 
-- 不变量用 `const`；枚举常量用 `iota`。
+## 魔法值
+
+- **MUST NOT** 在逻辑中使用魔法值。魔法值是未命名的数字或字符串字面量，它承载
+  业务或技术含义：状态、编码、限额、阈值、超时、比例、键、路径或角色。
+- **MUST** 用 `const` 为该含义命名。枚举 **MUST** 使用 `iota`。字面量只允许出现在
+  该常量声明中。标准库已有名称时（`http.StatusOK`、`time.Second`）直接使用，
+  不要再写裸字面量。
+- 下列情况不是魔法值，**MAY** 保持内联：
+  - `0`、`1`、`-1` 用作零值、计数、下标或切片边界
+  - `""` 用作零值
+  - `true` 和 `false`
+  - 格式化字符串，以及给人读的日志或错误文案
+  - `_test.go` 中的夹具和期望值
 - 示例：
 
 ```go
+// 不良
+if status == 2 {
+    return nil
+}
+if retries > 3 {
+    return fmt.Errorf("give up")
+}
+time.Sleep(500 * time.Millisecond)
+if role == "admin" {
+    return nil
+}
+
 // 良好
-const defaultTimeout = 10 * time.Second
+const (
+    statusActive = 2
+    maxRetries   = 3
+    retryDelay   = 500 * time.Millisecond
+    roleAdmin    = "admin"
+)
+
+if status == statusActive {
+    return nil
+}
+if retries > maxRetries {
+    return fmt.Errorf("give up")
+}
+time.Sleep(retryDelay)
+if role == roleAdmin {
+    return nil
+}
 
 type Status int
+
 const (
     StatusUnknown Status = iota
     StatusActive
     StatusDone
 )
+```
+
+## 领域取值
+
+领域取值是基本类型（`string`、`int` 等），但其合法内容是一组固定的业务术语，
+例如模式、引擎、拓扑、角色、状态码。自由文本（名称、说明、用户输入、日志或
+错误文案）不是领域取值。
+
+- **MUST NOT** 把领域取值声明成看不出合法集合的裸基本类型。适用于字段、参数、
+  返回值和变量。
+- **MUST** 在声明处让每一个已知合法值可见，使用下面两种写法之一。优先使用命名
+  类型：跳转到该类型就能看到全部取值，常量也同时满足「魔法值」。
+  1. **命名类型 + 常量。** 使用定义类型（`type Engine string`），并为每个已知
+     取值声明 `const`（枚举用 `iota`）。**不要**写成纯别名
+     （`type Engine = string`）：别名与 `string` 是同一类型，取值不会聚在一个
+     可区分的类型上。表示「无法确认」或尚未枚举全的取值 **MUST** 单独写成常量，
+     并注释说明。没有任何说明的 `""` 不算满足。
+  2. **穷尽注释。** 声明仍用基本类型时，注释 **MUST** 以
+     `"vllm" | "sglang" | ""` 的形式列出当前已知的每一个字面量。只有一个已知值
+     时，写出那一个即可。空字符串或任何尚未确认的取值 **MUST** 写出来并标明，
+     例如 `""（无法确认）`。只复述字段含义，或漏掉空值/未知值，不算满足。
+- 调用处 **MUST** 仍使用常量名。穷尽注释只说明声明，不允许在逻辑里写裸字面量
+  （见「魔法值」）。
+- 示例：
+
+```go
+// 不良 — 裸 string，看不出合法值
+type ScaleValueV2 struct {
+    Mode     string `json:"mode"`
+    Engine   string `json:"engine"`
+    Topology string `json:"topology"`
+}
+
+// 良好 — 定义类型；跳转到 Engine 即可看到全部取值
+type Engine string
+
+const (
+    EngineVLLM    Engine = "vllm"
+    EngineSGLang  Engine = "sglang"
+    EngineUnknown Engine = "" // 无法确认
+)
+
+type Topology string
+
+const (
+    TopologySingle Topology = "single"
+    TopologyPD     Topology = "pd"
+)
+
+type ScaleValueV2 struct {
+    Mode     string   `json:"mode"` // "basic"
+    Engine   Engine   `json:"engine"`
+    Topology Topology `json:"topology"`
+}
+
+// 良好 — 仍用基本类型时，注释必须穷尽已知字面量
+type ScaleValueV2 struct {
+    Mode     string `json:"mode"`     // "basic"
+    Engine   string `json:"engine"`   // "vllm" | "sglang" | ""（无法确认）
+    Topology string `json:"topology"` // "single" | "pd"
+}
 ```
 
 ## 请求 DTO 标签
@@ -730,6 +832,8 @@ func Copy(c *Counter) *Counter { // 避免复制 mutex
 6. 使用全局变量
 7. 无超时阻塞
 8. 创建无限 goroutine
+9. 用魔法值表示状态、限额、超时、键或路径
+10. 把封闭的业务术语声明成裸 `string` 或 `int`，既无命名类型也无穷尽取值注释
 
 ## 参考资料
 
